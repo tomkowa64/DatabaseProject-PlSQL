@@ -5,6 +5,7 @@
  */
 package kj_technologiesdb;
 
+import Controllers.*;
 /**
  *
  * @author Tomasz & Karol
