@@ -5,6 +5,7 @@
  */
 package Controllers;
 
+
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -14,51 +15,51 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
-public class addProductController implements Initializable{
+public class addOrderController implements Initializable{
 
     @FXML
     private Button goBack;
 
     @FXML
-    private TextField productPriceInput;
+    private TextField orderAddressAddressInput;
 
     @FXML
-    private PasswordField productQuantityInput;
+    private TextField orderAddressCityInput;
 
     @FXML
-    private TextField productNameInput;
+    private TextField orderAddressRegionInput;
 
     @FXML
-    private Button addProductButton;
+    private TextField orderAddressPostalCodeInput;
 
     @FXML
-    private TextArea productDescInput;
+    private TextField orderAddressCountryInput;
 
     @FXML
-    private ChoiceBox<?> supplierChoiceBox;
+    private Button addOrderButton;
 
     @FXML
-    private ChoiceBox<?> categoryChoiceBox;
+    private ComboBox<?> orderCustomerComboBox;
 
     @FXML
-    private Button addParameterInput;
+    private ComboBox<?> orderEmployeeComboBox;
 
     @FXML
-    private Pane ParametersPane;
+    private ComboBox<?> orderShipperComboBox;
 
     @FXML
-    private ChoiceBox<?> parameterChoiceBox;
+    private ComboBox<?> orderProductComboBox;
 
     @FXML
-    private TextField parameterValueInput;
-    
+    private TextField orderQuantityInput;
+
+    @FXML
+    private TextField orderDiscountInput;
+
     @FXML
     private void handleButtonAction (ActionEvent event) throws Exception {
         Stage stage;
@@ -66,7 +67,7 @@ public class addProductController implements Initializable{
 
         if(event.getSource()==goBack){
             stage = (Stage) goBack.getScene().getWindow();
-            root = FXMLLoader.load(getClass().getResource("/view/ProductTable.fxml"));
+            root = FXMLLoader.load(getClass().getResource("/view/OrderTable.fxml"));
         }
 //        else if(event.getSource()==addCategoryButton){
 //            stage = (Stage) addCategoryButton.getScene().getWindow();
@@ -81,10 +82,9 @@ public class addProductController implements Initializable{
         stage.setScene(scene);
         stage.show();
     }   
-
+    
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-
     }
 
 }

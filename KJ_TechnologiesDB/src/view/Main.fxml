@@ -9,18 +9,17 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.Pane?>
 
-
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.mainController">
    <children>
       <Pane prefHeight="800.0" prefWidth="369.0" style="-fx-background-color: #e10056;">
          <children>
-            <Button fx:id="employees" layoutX="36.0" layoutY="21.0" mnemonicParsing="false" prefHeight="73.0" prefWidth="298.0" stylesheets="@../css/Main.css" text="PRACOWNICY" textFill="WHITE" />
-            <Button fx:id="customers" layoutX="36.0" layoutY="102.0" mnemonicParsing="false" prefHeight="73.0" prefWidth="298.0" stylesheets="@../css/Main.css" text="KLIENCI" textFill="WHITE" />
-            <Button fx:id="products" layoutX="36.0" layoutY="187.0" mnemonicParsing="false" prefHeight="73.0" prefWidth="298.0" stylesheets="@../css/Main.css" text="PRODUKTY" textFill="WHITE" />
-            <Button fx:id="orders" layoutX="36.0" layoutY="274.0" mnemonicParsing="false" prefHeight="73.0" prefWidth="298.0" stylesheets="@../css/Main.css" text="ZAMÓWIENIA" textFill="WHITE" />
-            <Button fx:id="suppliers" layoutX="36.0" layoutY="356.0" mnemonicParsing="false" prefHeight="73.0" prefWidth="298.0" stylesheets="@../css/Main.css" text="DOSTAWCY" textFill="WHITE" />
-            <Button fx:id="shippers" layoutX="36.0" layoutY="438.0" mnemonicParsing="false" prefHeight="73.0" prefWidth="298.0" stylesheets="@../css/Main.css" text="KURIERZY" textFill="WHITE" />
-            <Button fx:id="categories" layoutX="36.0" layoutY="523.0" mnemonicParsing="false" prefHeight="73.0" prefWidth="298.0" stylesheets="@../css/Main.css" text="KATEGORIE" textFill="WHITE" />
+            <Button fx:id="employees" layoutX="36.0" layoutY="21.0" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="73.0" prefWidth="298.0" stylesheets="@../css/Main.css" text="PRACOWNICY" textFill="WHITE" />
+            <Button fx:id="customers" layoutX="36.0" layoutY="102.0" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="73.0" prefWidth="298.0" stylesheets="@../css/Main.css" text="KLIENCI" textFill="WHITE" />
+            <Button fx:id="products" layoutX="36.0" layoutY="187.0" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="73.0" prefWidth="298.0" stylesheets="@../css/Main.css" text="PRODUKTY" textFill="WHITE" />
+            <Button fx:id="orders" layoutX="36.0" layoutY="274.0" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="73.0" prefWidth="298.0" stylesheets="@../css/Main.css" text="ZAMÓWIENIA" textFill="WHITE" />
+            <Button fx:id="suppliers" layoutX="36.0" layoutY="356.0" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="73.0" prefWidth="298.0" stylesheets="@../css/Main.css" text="DOSTAWCY" textFill="WHITE" />
+            <Button fx:id="shippers" layoutX="36.0" layoutY="438.0" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="73.0" prefWidth="298.0" stylesheets="@../css/Main.css" text="KURIERZY" textFill="WHITE" />
+            <Button fx:id="categories" layoutX="36.0" layoutY="523.0" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="73.0" prefWidth="298.0" stylesheets="@../css/Main.css" text="KATEGORIE" textFill="WHITE" />
             <ImageView fitHeight="44.0" fitWidth="45.0" layoutX="55.0" layoutY="117.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../img/icons/addUser.png" />
@@ -56,9 +55,9 @@
                   <Image url="@../img/icons/categories.png" />
                </image>
             </ImageView>
-            <Button layoutX="14.0" layoutY="684.0" mnemonicParsing="false" prefHeight="107.0" prefWidth="102.0" stylesheets="@../css/Main.css" textFill="WHITE">
+            <Button fx:id="exit" onAction="#handleExitButtonAction" layoutX="14.0" layoutY="684.0" mnemonicParsing="false" prefHeight="107.0" prefWidth="102.0" stylesheets="@../css/Main.css" textFill="WHITE">
                <graphic>
-                  <ImageView fx:id="exit" fitHeight="80.0" fitWidth="93.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="80.0" fitWidth="93.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../img/icons/exit.png" />
                      </image>

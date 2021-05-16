@@ -9,7 +9,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" style="-fx-background-color: #e10056;" stylesheets="@../css/Main.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" style="-fx-background-color: #e10056;" stylesheets="@../css/Main.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.addSupplierController">
    <children>
       <ImageView fitHeight="542.0" fitWidth="424.0" layoutX="88.0" layoutY="84.0" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -21,7 +21,7 @@
             <Font size="40.0" />
          </font>
       </Label>
-      <Button fx:id="goBack" layoutX="24.0" layoutY="22.0" mnemonicParsing="false" prefHeight="72.0" prefWidth="84.0">
+      <Button fx:id="goBack" layoutX="24.0" onAction="#handleButtonAction" layoutY="22.0" mnemonicParsing="false" prefHeight="72.0" prefWidth="84.0">
          <graphic>
             <ImageView fitHeight="54.0" fitWidth="57.0" pickOnBounds="true" preserveRatio="true">
                <image>

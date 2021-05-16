@@ -11,7 +11,7 @@
 <?import javafx.scene.text.Font?>
 
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" style="-fx-background-color: #0c121a;" stylesheets="@../css/Table.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="supplierTableController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" style="-fx-background-color: #0c121a;" stylesheets="@../css/Table.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.categoryTableController">
    <children>
       <Pane prefHeight="158.0" prefWidth="1280.0" style="-fx-background-color: #e10056;" stylesheets="@../css/Main.css">
          <children>
@@ -20,7 +20,7 @@
                   <Font size="50.0" />
                </font>
             </Label>
-            <Button fx:id="goBack" layoutX="30.0" layoutY="25.0" mnemonicParsing="false" prefHeight="91.0" prefWidth="86.0">
+            <Button fx:id="goBack" onAction="#handleButtonAction" layoutX="30.0" layoutY="25.0" mnemonicParsing="false" prefHeight="91.0" prefWidth="86.0">
                <graphic>
                   <ImageView fitHeight="69.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -39,7 +39,7 @@
             <TableColumn fx:id="delCategoryCol" minWidth="0.0" prefWidth="98.0" text="Usuń" />
         </columns>
       </TableView>
-      <Button fx:id="addCategoryCol" layoutX="43.0" layoutY="204.0" mnemonicParsing="false" prefHeight="95.0" prefWidth="76.0">
+      <Button fx:id="addCategoryButton" onAction="#handleButtonAction" layoutX="43.0" layoutY="204.0" mnemonicParsing="false" prefHeight="95.0" prefWidth="76.0">
          <graphic>
             <ImageView fitHeight="79.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true">
                <image>

@@ -10,17 +10,16 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" style="-fx-background-color: #0c121a;" stylesheets="@../css/Table.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="orderTableController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" style="-fx-background-color: #0c121a;" stylesheets="@../css/Table.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.shipperTableController">
    <children>
       <Pane prefHeight="158.0" prefWidth="1280.0" style="-fx-background-color: #e10056;" stylesheets="@../css/Main.css">
          <children>
-            <Label layoutX="479.0" layoutY="43.0" prefHeight="73.0" prefWidth="322.0" text="ZAMÓWIENIA" textFill="WHITE">
+            <Label layoutX="528.0" layoutY="43.0" prefHeight="73.0" prefWidth="224.0" text="KURIERZY" textFill="WHITE">
                <font>
                   <Font size="50.0" />
                </font>
             </Label>
-            <Button fx:id="goBack" layoutX="30.0" layoutY="25.0" mnemonicParsing="false" prefHeight="91.0" prefWidth="86.0">
+            <Button fx:id="goBack" layoutX="30.0" onAction="#handleButtonAction" layoutY="25.0" mnemonicParsing="false" prefHeight="91.0" prefWidth="86.0">
                <graphic>
                   <ImageView fitHeight="69.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -31,21 +30,16 @@
             </Button>
          </children>
       </Pane>
-      <TableView fx:id="OrderTable" layoutX="170.0" layoutY="248.0" prefHeight="501.0" prefWidth="1066.0" style="-fx-background-color: transparent; -fx-border-color: white;">
+      <TableView fx:id="ShipperTable" layoutX="170.0" layoutY="248.0" prefHeight="501.0" prefWidth="517.0" style="-fx-background-color: transparent; -fx-border-color: white;">
         <columns>
-          <TableColumn fx:id="orderIdCol" prefWidth="57.0" text="ID" />
-          <TableColumn fx:id="orderCustomerCol" prefWidth="114.0" text="Klient" />
-            <TableColumn fx:id="orderEmployeeCol" minWidth="1.0" prefWidth="123.0" text="Pracownik" />
-            <TableColumn fx:id="orderOrderDateCol" prefWidth="121.0" text="Data zamówienia" />
-            <TableColumn fx:id="orderReqDateCol" prefWidth="132.0" text="Data Wysłania" />
-            <TableColumn fx:id="orderShipDateCol" prefWidth="135.0" text="Data Dostarczenia" />
-            <TableColumn fx:id="orderShipperCol" prefWidth="111.0" text="Kurier" />
-            <TableColumn fx:id="orderShipNameCol" prefWidth="125.0" text="Nazwa przesyłki" />
-            <TableColumn fx:id="orderAddressCol" prefWidth="77.0" text="Adres" />
-            <TableColumn fx:id="delOrderCol" prefWidth="75.0" text="Usuń" />
+          <TableColumn fx:id="shipperIdCol" prefWidth="57.0" text="ID" />
+          <TableColumn fx:id="shipperCompanyNameCol" prefWidth="148.0" text="Nazwa spółki" />
+            <TableColumn fx:id="shipperPhoneNumberCol" prefWidth="120.0" text="Telefon" />
+            <TableColumn fx:id="shipperEmailCol" minWidth="0.0" prefWidth="108.0" text="Email" />
+            <TableColumn fx:id="delShipperCol" prefWidth="76.0" text="Usuń" />
         </columns>
       </TableView>
-      <Button fx:id="addOrderButton" layoutX="43.0" layoutY="204.0" mnemonicParsing="false" prefHeight="95.0" prefWidth="76.0">
+      <Button fx:id="addShipperButton" onAction="#handleButtonAction" layoutX="43.0" layoutY="204.0" mnemonicParsing="false" prefHeight="95.0" prefWidth="76.0">
          <graphic>
             <ImageView fitHeight="79.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true">
                <image>

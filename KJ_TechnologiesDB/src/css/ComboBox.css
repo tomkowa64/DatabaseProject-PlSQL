@@ -1,0 +1,7 @@
+.combo-box .arrow{
+	-fx-background-color: #FFF;
+}
+.combo-box{
+	-fx-background-color: #e10056;
+	-fx-border-color: #FFF;
+}
