@@ -154,41 +154,83 @@ public class shipperTableController implements Initializable{
         shipperEmailCol.setCellValueFactory(new PropertyValueFactory<Shipper,String>("Email"));
         
         delShipperCol.setCellFactory(
-        new Callback<TableColumn<Shipper, Void>, TableCell<Shipper, Void>>() {
-            @Override
-            public TableCell<Shipper, Void> call(final TableColumn<Shipper, Void> param) {
-                final TableCell<Shipper, Void> cell = new TableCell<Shipper, Void>() {
-                    
-                    Image image = new Image(getClass().getResourceAsStream("/img/icons/trash.png"), 32, 32, false, false);
-                    private final Button btn = new Button();
+            new Callback<TableColumn<Shipper, Void>, TableCell<Shipper, Void>>() {
+                @Override
+                public TableCell<Shipper, Void> call(final TableColumn<Shipper, Void> param) {
+                    final TableCell<Shipper, Void> cell = new TableCell<Shipper, Void>() {
 
-                    {
-                        btn.setGraphic(new ImageView(image));
-                        btn.setOnAction((ActionEvent event) -> {
-                            
-                        });
-                    }
+                        Image image = new Image(getClass().getResourceAsStream("/img/icons/trash.png"), 32, 32, false, false);
+                        private final Button btn = new Button();
 
-                    @Override
-                    public void updateItem(Void item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (empty) {
-                            setGraphic(null);
-                        } else {
-                            setGraphic(btn);
+                        {
+                            btn.setGraphic(new ImageView(image));
+                            btn.setOnAction((ActionEvent event) -> {
+                                Connection con;  
+                                try {
+                                    con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","system","oracle");
+                                    String query = "{call KJTCompany.DELETE_SHIPPER(?)}";
+                                    CallableStatement stmt = con.prepareCall(query);
+                                    stmt.setInt(1, getTableView().getItems().get(getIndex()).getShipperID());
+                                    stmt.execute();
+                                } catch (SQLException ex) {
+                                    Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+
+                                getTableView().getItems().remove(getIndex());
+                            });
                         }
-                    }
-                };
-                cell.setAlignment(Pos.CENTER);
-                return cell;
+
+                        @Override
+                        public void updateItem(Void item, boolean empty) {
+                            super.updateItem(item, empty);
+                            if (empty) {
+                                setGraphic(null);
+                            } else {
+                                setGraphic(btn);
+                            }
+                        }
+                    };
+                    cell.setAlignment(Pos.CENTER);
+                    return cell;
+                }
             }
-         }
         ); 
         
         shipperCompanyNameCol.setCellFactory(TextFieldTableCell.forTableColumn());
         shipperEmailCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        
+        shipperCompanyNameCol.setOnEditCommit((TableColumn.CellEditEvent<Shipper, String> event) -> {
+            Connection con;  
+            try {
+                con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","system","oracle");
+                String query = "{call KJTCompany.UPDATE_SHIPPER(?,?,?,?)}";
+                CallableStatement stmt = con.prepareCall(query);
+                stmt.setInt(1, event.getTableView().getItems().get(event.getTablePosition().getRow()).getShipperID());
+                stmt.setString(2, event.getNewValue());
+                stmt.setNull(3, OracleTypes.NULL);
+                stmt.setNull(4, OracleTypes.NULL);
+                stmt.execute();
+            } catch (SQLException ex) {
+                Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        
+        shipperEmailCol.setOnEditCommit((TableColumn.CellEditEvent<Shipper, String> event) -> {
+            Connection con;  
+            try {
+                con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","system","oracle");
+                String query = "{call KJTCompany.UPDATE_SHIPPER(?,?,?,?)}";
+                CallableStatement stmt = con.prepareCall(query);
+                stmt.setInt(1, event.getTableView().getItems().get(event.getTablePosition().getRow()).getShipperID());
+                stmt.setNull(2, OracleTypes.NULL);
+                stmt.setNull(3, OracleTypes.NULL);
+                stmt.setString(4, event.getNewValue());
+                stmt.execute();
+            } catch (SQLException ex) {
+                Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
 
         ShipperTable.setItems(ShippersResultSet);
     }
-
 }

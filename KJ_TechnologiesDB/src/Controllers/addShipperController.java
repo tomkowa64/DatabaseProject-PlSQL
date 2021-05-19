@@ -6,6 +6,10 @@
 package Controllers;
 
 import java.net.URL;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -42,19 +46,44 @@ public class addShipperController implements Initializable{
         if(event.getSource()==goBack){
             stage = (Stage) goBack.getScene().getWindow();
             root = FXMLLoader.load(getClass().getResource("/view/ShipperTable.fxml"));
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
         }
-//        else if(event.getSource()==addCategoryButton){
-//            stage = (Stage) addCategoryButton.getScene().getWindow();
-//            root = FXMLLoader.load(getClass().getResource("/view/addCategory.fxml"));
-//        } Add to Database code TODO
-        else{
-            stage = null;
-            root = null;
+        else if(event.getSource()==addShipperButton){
+            try{  
+                try {
+                    Class.forName("oracle.jdbc.driver.OracleDriver");
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+                if(!shipperCompanyNameInput.getText().isEmpty() && !shipperPhoneNumberInput.getText().isEmpty())
+                {
+                    Connection con=DriverManager.getConnection(  
+                    "jdbc:oracle:thin:@localhost:1521:xe","system","oracle");  
+
+                    String query = "{call KJTCompany.INSERT_SHIPPER(?,?,?)}";
+
+                    CallableStatement stmt = con.prepareCall(query);
+
+                    stmt.setString(1, shipperCompanyNameInput.getText());
+                    stmt.setString(2, shipperPhoneNumberInput.getText());
+                    stmt.setString(3, shipperEmailInput.getText());
+                    stmt.execute();
+
+                    shipperCompanyNameInput.setText("");
+                    shipperPhoneNumberInput.setText("");
+                    shipperEmailInput.setText("");
+
+                    con.close();  
+                }
+            }
+            catch(SQLException e){ 
+                System.out.println(e);
+            }
         }
         
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
     }   
 
     @Override

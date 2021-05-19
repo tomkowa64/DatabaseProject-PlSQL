@@ -95,7 +95,7 @@ public class categoryTableController implements Initializable{
         stage.show();
     }   
 
-        private List getCategoriesResultSet() throws SQLException{
+    private List getCategoriesResultSet() throws SQLException{
         List ll = new LinkedList();
         try{  
             try {
@@ -163,7 +163,18 @@ public class categoryTableController implements Initializable{
                     {
                         btn.setGraphic(new ImageView(image));
                         btn.setOnAction((ActionEvent event) -> {
+                            Connection con;  
+                            try {
+                                con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","system","oracle");
+                                String query = "{call KJTCompany.DELETE_CATEGORY(?)}";
+                                CallableStatement stmt = con.prepareCall(query);
+                                stmt.setInt(1, getTableView().getItems().get(getIndex()).getCategoryId());
+                                stmt.execute();
+                            } catch (SQLException ex) {
+                                Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
+                            }
                             
+                            getTableView().getItems().remove(getIndex());
                         });
                     }
 
@@ -182,6 +193,36 @@ public class categoryTableController implements Initializable{
             }
          }
         ); 
+        
+        categoryNameCol.setOnEditCommit((TableColumn.CellEditEvent<Category, String> event) -> {
+            Connection con;  
+            try {
+                con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","system","oracle");
+                String query = "{call KJTCompany.UPDATE_CATEGORY(?,?,?)}";
+                CallableStatement stmt = con.prepareCall(query);
+                stmt.setInt(1, event.getTableView().getItems().get(event.getTablePosition().getRow()).getCategoryId());
+                stmt.setString(2, event.getNewValue());
+                stmt.setNull(3, OracleTypes.NULL);
+                stmt.execute();
+            } catch (SQLException ex) {
+                Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        
+        categoryDescCol.setOnEditCommit((TableColumn.CellEditEvent<Category, String> event) -> {
+            Connection con;  
+            try {
+                con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","system","oracle");
+                String query = "{call KJTCompany.UPDATE_CATEGORY(?,?,?)}";
+                CallableStatement stmt = con.prepareCall(query);
+                stmt.setInt(1, event.getTableView().getItems().get(event.getTablePosition().getRow()).getCategoryId());
+                stmt.setNull(2, OracleTypes.NULL);
+                stmt.setString(3, event.getNewValue());
+                stmt.execute();
+            } catch (SQLException ex) {
+                Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
         
         categoryNameCol.setCellFactory(TextFieldTableCell.forTableColumn());
         categoryDescCol.setCellFactory(TextFieldTableCell.forTableColumn());
