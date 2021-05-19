@@ -33,10 +33,10 @@
       </Pane>
       <TableView fx:id="CategoryTable" layoutX="170.0" layoutY="248.0" prefHeight="501.0" prefWidth="623.0" style="-fx-background-color: transparent; -fx-border-color: white;">
         <columns>
-          <TableColumn fx:id="categoryIdCol" prefWidth="57.0" text="ID" />
-          <TableColumn fx:id="categoryNameCol" prefWidth="148.0" text="Nazwa" />
-            <TableColumn fx:id="categoryDescCol" minWidth="1.0" prefWidth="316.0" text="Opis" />
-            <TableColumn fx:id="delCategoryCol" minWidth="0.0" prefWidth="98.0" text="Usuń" />
+          <TableColumn fx:id="categoryIdCol" prefWidth="57.0" text="id" />
+          <TableColumn fx:id="categoryNameCol" prefWidth="148.0" text="nazwa" />
+            <TableColumn fx:id="categoryDescCol" minWidth="1.0" prefWidth="316.0" text="opis" />
+            <TableColumn fx:id="delCategoryCol" minWidth="0.0" prefWidth="98.0" text="usun" />
         </columns>
       </TableView>
       <Button fx:id="addCategoryButton" onAction="#handleButtonAction" layoutX="43.0" layoutY="204.0" mnemonicParsing="false" prefHeight="95.0" prefWidth="76.0">

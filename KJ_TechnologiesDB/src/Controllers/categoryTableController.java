@@ -6,18 +6,42 @@
 package Controllers;
 
 import java.net.URL;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import javafx.util.Callback;
+import model.Category;
+import oracle.jdbc.OracleCallableStatement;
+import oracle.jdbc.OracleTypes;
 
 public class categoryTableController implements Initializable{
 
@@ -25,19 +49,19 @@ public class categoryTableController implements Initializable{
     private Button goBack;
 
     @FXML
-    private TableView<?> CategoryTable;
+    private TableView<Category> CategoryTable;
 
     @FXML
-    private TableColumn<?, ?> categoryIdCol;
+    private TableColumn<Category, Number> categoryIdCol;
 
     @FXML
-    private TableColumn<?, ?> categoryNameCol;
+    private TableColumn<Category, String> categoryNameCol;
 
     @FXML
-    private TableColumn<?, ?> categoryDescCol;
+    private TableColumn<Category, String> categoryDescCol;
 
     @FXML
-    private TableColumn<?, ?> delCategoryCol;
+    private TableColumn<Category, Void> delCategoryCol;
 
     @FXML
     private Button addCategoryButton;
@@ -71,9 +95,97 @@ public class categoryTableController implements Initializable{
         stage.show();
     }   
 
+        private List getCategoriesResultSet() throws SQLException{
+        List ll = new LinkedList();
+        try{  
+            try {
+                Class.forName("oracle.jdbc.driver.OracleDriver");
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            Connection con=DriverManager.getConnection(  
+            "jdbc:oracle:thin:@localhost:1521:xe","system","oracle");  
+
+            String query = "{call KJTCompany.SELECT_CATEGORIES(?)}";
+            
+            CallableStatement stmt = con.prepareCall(query);
+            
+            stmt.registerOutParameter(1, OracleTypes.CURSOR);
+            stmt.executeUpdate();
+            
+            ResultSet cursor = ((OracleCallableStatement)stmt).getCursor(1);
+            
+            while(cursor.next()){
+                int catId = cursor.getInt("categoryId");
+                String catName = cursor.getString("categoryName");
+                String catDesc = cursor.getString("Description");
+                
+                Category category = new Category(catId,catName,catDesc);
+                ll.add(category); 
+            }
+            
+            con.close();  
+        }
+        catch(Exception e){ 
+            System.out.println(e);
+        }
+        return ll;
+    }
+    
+  
+        
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        ObservableList<Category> CategoriesResultSet = null;
+        try {
+            CategoriesResultSet = FXCollections.observableArrayList(getCategoriesResultSet());
+        } catch (SQLException ex) {
+            Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        CategoryTable.setEditable(true);
+        
+        
+        categoryIdCol.setCellValueFactory(new PropertyValueFactory<Category,Number>("CategoryId"));
+        categoryNameCol.setCellValueFactory(new PropertyValueFactory<Category,String>("CategoryName"));
+        categoryDescCol.setCellValueFactory(new PropertyValueFactory<Category,String>("Description"));
+        
+        delCategoryCol.setCellFactory(
+        new Callback<TableColumn<Category, Void>, TableCell<Category, Void>>() {
+            @Override
+            public TableCell<Category, Void> call(final TableColumn<Category, Void> param) {
+                final TableCell<Category, Void> cell = new TableCell<Category, Void>() {
+                    
+                    Image image = new Image(getClass().getResourceAsStream("/img/icons/trash.png"), 32, 32, false, false);
+                    private final Button btn = new Button();
 
+                    {
+                        btn.setGraphic(new ImageView(image));
+                        btn.setOnAction((ActionEvent event) -> {
+                            
+                        });
+                    }
+
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            setGraphic(btn);
+                        }
+                    }
+                };
+                cell.setAlignment(Pos.CENTER);
+                return cell;
+            }
+         }
+        ); 
+        
+        categoryNameCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        categoryDescCol.setCellFactory(TextFieldTableCell.forTableColumn());
+
+        CategoryTable.setItems(CategoriesResultSet);
     }
-
 }
