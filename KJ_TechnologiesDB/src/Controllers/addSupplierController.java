@@ -6,6 +6,10 @@
 package Controllers;
 
 import java.net.URL;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -60,19 +64,62 @@ public class addSupplierController implements Initializable{
         if(event.getSource()==goBack){
             stage = (Stage) goBack.getScene().getWindow();
             root = FXMLLoader.load(getClass().getResource("/view/SupplierTable.fxml"));
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
         }
-//        else if(event.getSource()==addCategoryButton){
-//            stage = (Stage) addCategoryButton.getScene().getWindow();
-//            root = FXMLLoader.load(getClass().getResource("/view/addCategory.fxml"));
-//        } Add to Database code TODO
-        else{
-            stage = null;
-            root = null;
+        else if(event.getSource()==addSupplierButton){
+            try{  
+                try {
+                    Class.forName("oracle.jdbc.driver.OracleDriver");
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+                if(!supplierCompanyNameInput.getText().isEmpty() &&
+                   !supplierPhoneNumberInput.getText().isEmpty() &&
+                   !supplierEmailInput.getText().isEmpty() &&
+                   !supplierWebpageInput.getText().isEmpty() &&
+                   !supplierAddressAddressInput.getText().isEmpty() &&
+                   !supplierAddressCityInput.getText().isEmpty() &&
+                   !supplierAddressPostalCodeInput.getText().isEmpty() &&
+                   !supplierAddressCountryInput.getText().isEmpty())
+                {
+                    Connection con=DriverManager.getConnection(  
+                    "jdbc:oracle:thin:@localhost:1521:xe","system","oracle");  
+
+                    String query = "{call KJTCompany.INSERT_SUPPLIER(?,?,?,?,?,?,?,?,?)}";
+
+                    CallableStatement stmt = con.prepareCall(query);
+
+                    stmt.setString(1, supplierCompanyNameInput.getText());
+                    stmt.setInt(2, Integer.parseInt(supplierPhoneNumberInput.getText()));
+                    stmt.setString(3, supplierEmailInput.getText());
+                    stmt.setString(4, supplierWebpageInput.getText());
+                    stmt.setString(5, supplierAddressAddressInput.getText());
+                    stmt.setString(6, supplierAddressCityInput.getText());
+                    stmt.setString(7, supplierAddressRegionInput.getText());
+                    stmt.setString(8, supplierAddressPostalCodeInput.getText());
+                    stmt.setString(9, supplierAddressCountryInput.getText());
+                    stmt.execute();
+
+                    supplierCompanyNameInput.setText("");
+                    supplierPhoneNumberInput.setText("");
+                    supplierEmailInput.setText("");
+                    supplierWebpageInput.setText("");
+                    supplierAddressAddressInput.setText("");
+                    supplierAddressCityInput.setText("");
+                    supplierAddressRegionInput.setText("");
+                    supplierAddressPostalCodeInput.setText("");
+                    supplierAddressCountryInput.setText("");
+
+                    con.close();  
+                }
+            }
+            catch(SQLException e){ 
+                System.out.println(e);
+            }
         }
-        
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
     }   
     
     @Override
