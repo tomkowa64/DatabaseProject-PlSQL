@@ -6,6 +6,10 @@
 package Controllers;
 
 import java.net.URL;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -18,6 +22,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import oracle.jdbc.OracleTypes;
 
 public class addCustomerController implements Initializable{
 
@@ -74,19 +79,80 @@ public class addCustomerController implements Initializable{
         if(event.getSource()==goBack){
             stage = (Stage) goBack.getScene().getWindow();
             root = FXMLLoader.load(getClass().getResource("/view/CustomerTable.fxml"));
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
         }
-//        else if(event.getSource()==addCategoryButton){
-//            stage = (Stage) addCategoryButton.getScene().getWindow();
-//            root = FXMLLoader.load(getClass().getResource("/view/addCategory.fxml"));
-//        } Add to Database code TODO
-        else{
-            stage = null;
-            root = null;
+        else if(event.getSource()==addCustomerButton){
+            try{  
+                try {
+                    Class.forName("oracle.jdbc.driver.OracleDriver");
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+                if(!customerFirstNameInput.getText().isEmpty() &&
+                   !customerLastNameInput.getText().isEmpty() &&
+                   !customerPhoneNumberInput.getText().isEmpty() &&
+                   !customerUserLoginInput.getText().isEmpty() &&
+                   !customerUserPasswordInput.getText().isEmpty() &&
+                   !customerAddressAddressInput.getText().isEmpty() &&
+                   !customerAddresCityInput.getText().isEmpty() &&
+                   !customerAddressPostalCodeInput.getText().isEmpty() &&
+                   !customerAddressCountryInput.getText().isEmpty())
+                {
+                    Connection con=DriverManager.getConnection(  
+                    "jdbc:oracle:thin:@localhost:1521:xe","system","oracle");  
+
+                    String query = "{call KJTCompany.INSERT_CUSTOMER(?,?,?,?,?,?,?,?,?,?,?,?,?)}";
+
+                    CallableStatement stmt = con.prepareCall(query);
+
+                    stmt.setString(1, customerFirstNameInput.getText());
+                    stmt.setString(2, customerLastNameInput.getText());
+                    stmt.setString(3, customerContactTitleInput.getText());
+                    
+                    if(!customerNipInput.getText().isEmpty())
+                    {
+                        stmt.setLong(4, Long.parseLong(customerNipInput.getText()));
+                    }
+                    else
+                    {
+                        stmt.setNull(4, OracleTypes.NULL);
+                    }
+                    
+                    stmt.setInt(5, Integer.parseInt(customerPhoneNumberInput.getText()));
+                    stmt.setString(6, customerEmailInput.getText());
+                    stmt.setString(7, customerAddressAddressInput.getText());
+                    stmt.setString(8, customerAddresCityInput.getText());
+                    stmt.setString(9, customerAddressRegion.getText());
+                    stmt.setString(10, customerAddressPostalCodeInput.getText());
+                    stmt.setString(11, customerAddressCountryInput.getText());
+                    stmt.setString(12, customerUserLoginInput.getText());
+                    stmt.setString(13, customerUserPasswordInput.getText());
+                    stmt.execute();
+
+                    customerFirstNameInput.setText("");
+                    customerLastNameInput.setText("");
+                    customerContactTitleInput.setText("");
+                    customerNipInput.setText("");
+                    customerPhoneNumberInput.setText("");
+                    customerEmailInput.setText("");
+                    customerAddressAddressInput.setText("");
+                    customerAddressRegion.setText("");
+                    customerAddressPostalCodeInput.setText("");
+                    customerAddressPostalCodeInput.setText("");
+                    customerAddressCountryInput.setText("");
+                    customerUserLoginInput.setText("");
+                    customerUserPasswordInput.setText("");
+
+                    con.close();  
+                }
+            }
+            catch(SQLException e){ 
+                System.out.println(e);
+            }
         }
-        
-        Scene scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
     }   
 
     @Override

@@ -279,7 +279,18 @@ public class customerTableController implements Initializable{
                     {
                         btn.setGraphic(new ImageView(image));
                         btn.setOnAction((ActionEvent event) -> {
-                            
+                            Connection con;  
+                            try {
+                                con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","system","oracle");
+                                String query = "{call KJTCompany.DELETE_CUSTOMER(?)}";
+                                CallableStatement stmt = con.prepareCall(query);
+                                stmt.setInt(1, getTableView().getItems().get(getIndex()).getCustomerID());
+                                stmt.execute();
+                            } catch (SQLException ex) {
+                                Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+
+                            getTableView().getItems().remove(getIndex());
                         });
                     }
 
@@ -303,6 +314,81 @@ public class customerTableController implements Initializable{
         customerLastNameCol.setCellFactory(TextFieldTableCell.forTableColumn());
         customerTitleCol.setCellFactory(TextFieldTableCell.forTableColumn());
         customerEmailCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        
+        customerFirstNameCol.setOnEditCommit((TableColumn.CellEditEvent<Customer, String> event) -> {
+            Connection con;  
+            try {
+                con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","system","oracle");
+                String query = "{call KJTCompany.UPDATE_CUSTOMER(?,?,?,?,?,?,?)}";
+                CallableStatement stmt = con.prepareCall(query);
+                stmt.setInt(1, event.getTableView().getItems().get(event.getTablePosition().getRow()).getCustomerID());
+                stmt.setString(2, event.getNewValue());
+                for(int i = 3; i <= 7; i++)
+                {
+                    stmt.setNull(i, OracleTypes.NULL);
+                }
+                stmt.execute();
+            } catch (SQLException ex) {
+                Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        
+        customerLastNameCol.setOnEditCommit((TableColumn.CellEditEvent<Customer, String> event) -> {
+            Connection con;  
+            try {
+                con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","system","oracle");
+                String query = "{call KJTCompany.UPDATE_CUSTOMER(?,?,?,?,?,?,?)}";
+                CallableStatement stmt = con.prepareCall(query);
+                stmt.setInt(1, event.getTableView().getItems().get(event.getTablePosition().getRow()).getCustomerID());
+                stmt.setNull(2, OracleTypes.NULL);
+                stmt.setString(3, event.getNewValue());
+                for(int i = 4; i <= 7; i++)
+                {
+                    stmt.setNull(i, OracleTypes.NULL);
+                }
+                stmt.execute();
+            } catch (SQLException ex) {
+                Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        
+        customerTitleCol.setOnEditCommit((TableColumn.CellEditEvent<Customer, String> event) -> {
+            Connection con;  
+            try {
+                con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","system","oracle");
+                String query = "{call KJTCompany.UPDATE_CUSTOMER(?,?,?,?,?,?,?)}";
+                CallableStatement stmt = con.prepareCall(query);
+                stmt.setInt(1, event.getTableView().getItems().get(event.getTablePosition().getRow()).getCustomerID());
+                stmt.setNull(2, OracleTypes.NULL);
+                stmt.setNull(3, OracleTypes.NULL);
+                stmt.setString(4, event.getNewValue());
+                for(int i = 5; i <= 7; i++)
+                {
+                    stmt.setNull(i, OracleTypes.NULL);
+                }
+                stmt.execute();
+            } catch (SQLException ex) {
+                Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        
+        customerEmailCol.setOnEditCommit((TableColumn.CellEditEvent<Customer, String> event) -> {
+            Connection con;  
+            try {
+                con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","system","oracle");
+                String query = "{call KJTCompany.UPDATE_CUSTOMER(?,?,?,?,?,?,?)}";
+                CallableStatement stmt = con.prepareCall(query);
+                stmt.setInt(1, event.getTableView().getItems().get(event.getTablePosition().getRow()).getCustomerID());
+                for(int i = 2; i <= 6; i++)
+                {
+                    stmt.setNull(i, OracleTypes.NULL);
+                }
+                stmt.setString(7, event.getNewValue());
+                stmt.execute();
+            } catch (SQLException ex) {
+                Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
 
         CustomerTable.setItems(CustomersResultSet);
     }

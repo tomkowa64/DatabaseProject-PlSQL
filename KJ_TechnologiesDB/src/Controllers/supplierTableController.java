@@ -219,7 +219,18 @@ public class supplierTableController implements Initializable{
                     {
                         btn.setGraphic(new ImageView(image));
                         btn.setOnAction((ActionEvent event) -> {
-                            
+                            Connection con;  
+                            try {
+                                con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","system","oracle");
+                                String query = "{call KJTCompany.DELETE_SUPPLIER(?)}";
+                                CallableStatement stmt = con.prepareCall(query);
+                                stmt.setInt(1, getTableView().getItems().get(getIndex()).getSupplierID());
+                                stmt.execute();
+                            } catch (SQLException ex) {
+                                Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+
+                            getTableView().getItems().remove(getIndex());
                         });
                     }
 
@@ -242,6 +253,57 @@ public class supplierTableController implements Initializable{
         supplierCompanyNameCol.setCellFactory(TextFieldTableCell.forTableColumn());
         supplierEmailCol.setCellFactory(TextFieldTableCell.forTableColumn());
         supplierWebpageCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        
+        supplierCompanyNameCol.setOnEditCommit((TableColumn.CellEditEvent<Supplier, String> event) -> {
+            Connection con;  
+            try {
+                con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","system","oracle");
+                String query = "{call KJTCompany.UPDATE_SUPPLIER(?,?,?,?,?)}";
+                CallableStatement stmt = con.prepareCall(query);
+                stmt.setInt(1, event.getTableView().getItems().get(event.getTablePosition().getRow()).getSupplierID());
+                stmt.setString(2, event.getNewValue());
+                stmt.setNull(3, OracleTypes.NULL);
+                stmt.setNull(4, OracleTypes.NULL);
+                stmt.setNull(5, OracleTypes.NULL);
+                stmt.execute();
+            } catch (SQLException ex) {
+                Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        
+        supplierEmailCol.setOnEditCommit((TableColumn.CellEditEvent<Supplier, String> event) -> {
+            Connection con;  
+            try {
+                con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","system","oracle");
+                String query = "{call KJTCompany.UPDATE_SUPPLIER(?,?,?,?,?)}";
+                CallableStatement stmt = con.prepareCall(query);
+                stmt.setInt(1, event.getTableView().getItems().get(event.getTablePosition().getRow()).getSupplierID());
+                stmt.setString(4, event.getNewValue());
+                stmt.setNull(3, OracleTypes.NULL);
+                stmt.setNull(2, OracleTypes.NULL);
+                stmt.setNull(5, OracleTypes.NULL);
+                stmt.execute();
+            } catch (SQLException ex) {
+                Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        
+        supplierWebpageCol.setOnEditCommit((TableColumn.CellEditEvent<Supplier, String> event) -> {
+            Connection con;  
+            try {
+                con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","system","oracle");
+                String query = "{call KJTCompany.UPDATE_SUPPLIER(?,?,?,?,?)}";
+                CallableStatement stmt = con.prepareCall(query);
+                stmt.setInt(1, event.getTableView().getItems().get(event.getTablePosition().getRow()).getSupplierID());
+                stmt.setString(5, event.getNewValue());
+                stmt.setNull(3, OracleTypes.NULL);
+                stmt.setNull(4, OracleTypes.NULL);
+                stmt.setNull(2, OracleTypes.NULL);
+                stmt.execute();
+            } catch (SQLException ex) {
+                Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
 
         SupplierTable.setItems(SupplierResultSet);
     }

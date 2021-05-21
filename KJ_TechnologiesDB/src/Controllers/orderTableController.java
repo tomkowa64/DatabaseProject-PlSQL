@@ -335,7 +335,18 @@ public class orderTableController implements Initializable{
                     {
                         btn.setGraphic(new ImageView(image));
                         btn.setOnAction((ActionEvent event) -> {
-                            
+                            Connection con;  
+                            try {
+                                con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","system","oracle");
+                                String query = "{call KJTCompany.DELETE_ORDER(?)}";
+                                CallableStatement stmt = con.prepareCall(query);
+                                stmt.setInt(1, getTableView().getItems().get(getIndex()).getOrderID());
+                                stmt.execute();
+                            } catch (SQLException ex) {
+                                Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+
+                            getTableView().getItems().remove(getIndex());
                         });
                     }
 
@@ -357,6 +368,47 @@ public class orderTableController implements Initializable{
         
         orderReqDateCol.setCellFactory(TextFieldTableCell.forTableColumn());
         orderShipNameCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        
+        orderReqDateCol.setOnEditCommit((TableColumn.CellEditEvent<Order, String> event) -> {
+            Connection con;  
+            try {
+                con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","system","oracle");
+                String query = "{call KJTCompany.UPDATE_ORDER(?,?,?,?,?,?,?,?,?)}";
+                CallableStatement stmt = con.prepareCall(query);
+                stmt.setInt(1, event.getTableView().getItems().get(event.getTablePosition().getRow()).getOrderID());
+                for(int i = 2; i <= 4; i++)
+                {
+                    stmt.setNull(i, OracleTypes.NULL);
+                }
+                stmt.setDate(5, java.sql.Date.valueOf(event.getNewValue()));
+                for(int i = 6; i <= 9; i++)
+                {
+                    stmt.setNull(i, OracleTypes.NULL);
+                }
+                stmt.execute();
+            } catch (SQLException ex) {
+                Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        
+        orderShipNameCol.setOnEditCommit((TableColumn.CellEditEvent<Order, String> event) -> {
+            Connection con;  
+            try {
+                con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","system","oracle");
+                String query = "{call KJTCompany.UPDATE_ORDER(?,?,?,?,?,?,?,?,?)}";
+                CallableStatement stmt = con.prepareCall(query);
+                stmt.setInt(1, event.getTableView().getItems().get(event.getTablePosition().getRow()).getOrderID());
+                for(int i = 2; i <= 7; i++)
+                {
+                    stmt.setNull(i, OracleTypes.NULL);
+                }
+                stmt.setString(8, event.getNewValue());
+                stmt.setNull(9, OracleTypes.NULL);
+                stmt.execute();
+            } catch (SQLException ex) {
+                Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
 
         OrderTable.setItems(OrderResultSet);
     }

@@ -11,7 +11,7 @@
 <?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" style="-fx-background-color: #e10056;" stylesheets="@../css/Main.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.addEmployeeController">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1280.0" style="-fx-background-color: #e10056;" stylesheets="@../css/Main.css" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.addEmployeeController">
    <children>
       <ImageView fitHeight="542.0" fitWidth="424.0" layoutX="88.0" layoutY="84.0" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -23,7 +23,7 @@
             <Font size="40.0" />
          </font>
       </Label>
-      <Button fx:id="goBack" onAction="#handleButtonAction" layoutX="24.0" layoutY="22.0" mnemonicParsing="false" prefHeight="72.0" prefWidth="84.0">
+      <Button fx:id="goBack" layoutX="24.0" layoutY="22.0" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="72.0" prefWidth="84.0">
          <graphic>
             <ImageView fitHeight="54.0" fitWidth="57.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -37,19 +37,19 @@
             <Font size="30.0" />
          </font>
       </Label>
-      <TextField layoutX="923.0" layoutY="109.0" prefHeight="47.0" prefWidth="239.0" />
+      <TextField fx:id="employeeLastNameInput" layoutX="923.0" layoutY="109.0" prefHeight="47.0" prefWidth="239.0" />
       <Label layoutX="923.0" layoutY="79.0" text="Nazwisko" textFill="WHITE">
          <font>
             <Font size="20.0" />
          </font>
       </Label>
-      <TextField layoutX="640.0" layoutY="202.0" prefHeight="47.0" prefWidth="249.0" />
+      <TextField fx:id="employeeTitleInput" layoutX="640.0" layoutY="202.0" prefHeight="47.0" prefWidth="249.0" />
       <Label layoutX="640.0" layoutY="172.0" prefHeight="30.0" prefWidth="66.0" text="Tytuł*" textFill="WHITE">
          <font>
             <Font size="20.0" />
          </font>
       </Label>
-      <TextField layoutX="923.0" layoutY="202.0" prefHeight="47.0" prefWidth="239.0" />
+      <TextField fx:id="employeeTitleOfCourtesyInput" layoutX="923.0" layoutY="202.0" prefHeight="47.0" prefWidth="239.0" />
       <Label layoutX="923.0" layoutY="172.0" prefHeight="30.0" prefWidth="232.0" text="Zwrot grzecznościowy*" textFill="WHITE">
          <font>
             <Font size="20.0" />
@@ -60,19 +60,19 @@
             <Font size="20.0" />
          </font>
       </Label>
-      <DatePicker layoutX="640.0" layoutY="296.0" prefHeight="47.0" prefWidth="249.0" />
+      <DatePicker fx:id="employeeBirthDateInput" layoutX="640.0" layoutY="296.0" prefHeight="47.0" prefWidth="249.0" />
       <Label layoutX="640.0" layoutY="369.0" prefHeight="47.0" prefWidth="249.0" text="Dane kontakowe" textFill="WHITE">
          <font>
             <Font size="30.0" />
          </font>
       </Label>
-      <TextField layoutX="640.0" layoutY="446.0" prefHeight="47.0" prefWidth="249.0" />
+      <TextField fx:id="employeePhoneNumberInput" layoutX="640.0" layoutY="446.0" prefHeight="47.0" prefWidth="249.0" />
       <Label layoutX="640.0" layoutY="416.0" text="Telefon" textFill="WHITE">
          <font>
             <Font size="20.0" />
          </font>
       </Label>
-      <TextField layoutX="640.0" layoutY="538.0" prefHeight="47.0" prefWidth="249.0" />
+      <TextField fx:id="employeeEmailInput" layoutX="640.0" layoutY="538.0" prefHeight="47.0" prefWidth="249.0" />
       <Label layoutX="638.0" layoutY="505.0" text="Email" textFill="WHITE">
          <font>
             <Font size="20.0" />
@@ -83,7 +83,7 @@
             <Font size="30.0" />
          </font>
       </Label>
-      <TextField layoutX="989.0" layoutY="312.0" prefHeight="47.0" prefWidth="172.0" />
+      <TextField fx:id="employeeAddressAddressInput" layoutX="989.0" layoutY="312.0" prefHeight="47.0" prefWidth="172.0" />
       <Label layoutX="923.0" layoutY="319.0" prefHeight="47.0" prefWidth="25.0" text="ul." textFill="WHITE">
          <font>
             <Font size="20.0" />
@@ -94,20 +94,20 @@
             <Font size="20.0" />
          </font>
       </Label>
-      <TextField layoutX="989.0" layoutY="369.0" prefHeight="47.0" prefWidth="172.0" />
+      <TextField fx:id="employeeAddressCityInput" layoutX="989.0" layoutY="369.0" prefHeight="47.0" prefWidth="172.0" />
       <Label layoutX="923.0" layoutY="428.0" prefHeight="47.0" prefWidth="77.0" text="Region*" textFill="WHITE">
          <font>
             <Font size="20.0" />
          </font>
       </Label>
-      <TextField layoutX="999.0" layoutY="428.0" prefHeight="47.0" prefWidth="162.0" />
-      <TextField layoutX="1065.0" layoutY="482.0" prefHeight="47.0" prefWidth="96.0" />
+      <TextField fx:id="employeeAddressRegionInput" layoutX="999.0" layoutY="428.0" prefHeight="47.0" prefWidth="162.0" />
+      <TextField fx:id="employeeAddressPostalCodeInput" layoutX="1065.0" layoutY="482.0" prefHeight="47.0" prefWidth="96.0" />
       <Label layoutX="925.0" layoutY="481.0" prefHeight="47.0" prefWidth="128.0" text="Kod Pocztowy" textFill="WHITE">
          <font>
             <Font size="20.0" />
          </font>
       </Label>
-      <TextField layoutX="1007.0" layoutY="538.0" prefHeight="47.0" prefWidth="155.0" />
+      <TextField fx:id="employeeAddressCountryInput" layoutX="1007.0" layoutY="538.0" prefHeight="47.0" prefWidth="155.0" />
       <Label layoutX="925.0" layoutY="538.0" prefHeight="47.0" prefWidth="128.0" text="Państwo" textFill="WHITE">
          <font>
             <Font size="20.0" />
@@ -118,7 +118,7 @@
             <Font size="30.0" />
          </font>
       </Label>
-      <TextField layoutX="640.0" layoutY="687.0" prefHeight="47.0" prefWidth="249.0" />
+      <TextField fx:id="employeeUserLoginInput" layoutX="640.0" layoutY="687.0" prefHeight="47.0" prefWidth="249.0" />
       <Label layoutX="640.0" layoutY="657.0" text="Login" textFill="WHITE">
          <font>
             <Font size="20.0" />
@@ -129,15 +129,15 @@
             <Font size="20.0" />
          </font>
       </Label>
-      <PasswordField layoutX="915.0" layoutY="687.0" prefHeight="47.0" prefWidth="249.0" />
-      <TextField layoutX="640.0" layoutY="110.0" prefHeight="47.0" prefWidth="249.0" />
+      <PasswordField fx:id="employeeUserPasswordInput" layoutX="915.0" layoutY="687.0" prefHeight="47.0" prefWidth="249.0" />
+      <TextField fx:id="employeeFirstNameInput" layoutX="640.0" layoutY="110.0" prefHeight="47.0" prefWidth="249.0" />
       <Label layoutX="640.0" layoutY="80.0" text="Imie" textFill="WHITE">
          <font>
             <Font size="20.0" />
          </font>
       </Label>
       <Line endX="72.0" endY="-95.70709228515625" layoutX="517.0" layoutY="80.0" startX="72.0" startY="720.0" stroke="WHITE" strokeWidth="3.0" />
-      <Button layoutX="-4.0" layoutY="628.0" mnemonicParsing="false" prefHeight="174.0" prefWidth="593.0">
+      <Button fx:id="addEmployeeButton" layoutX="-4.0" layoutY="628.0" mnemonicParsing="false" onAction="#handleButtonAction" prefHeight="174.0" prefWidth="593.0">
          <graphic>
             <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
                <image>

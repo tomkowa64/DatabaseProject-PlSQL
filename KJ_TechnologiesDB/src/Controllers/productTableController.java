@@ -311,7 +311,18 @@ public class productTableController implements Initializable{
                     {
                         btn.setGraphic(new ImageView(image));
                         btn.setOnAction((ActionEvent event) -> {
-                            
+                            Connection con;  
+                            try {
+                                con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","system","oracle");
+                                String query = "{call KJTCompany.DELETE_PRODUCT(?)}";
+                                CallableStatement stmt = con.prepareCall(query);
+                                stmt.setInt(1, getTableView().getItems().get(getIndex()).getProductID());
+                                stmt.execute();
+                            } catch (SQLException ex) {
+                                Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+
+                            getTableView().getItems().remove(getIndex());
                         });
                     }
 
@@ -333,6 +344,43 @@ public class productTableController implements Initializable{
         
         productNameCol.setCellFactory(TextFieldTableCell.forTableColumn());
         productDescCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        
+        productNameCol.setOnEditCommit((TableColumn.CellEditEvent<Product, String> event) -> {
+            Connection con;  
+            try {
+                con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","system","oracle");
+                String query = "{call KJTCompany.UPDATE_PRODUCT(?,?,?,?,?,?)}";
+                CallableStatement stmt = con.prepareCall(query);
+                stmt.setInt(1, event.getTableView().getItems().get(event.getTablePosition().getRow()).getProductID());
+                stmt.setString(2, event.getNewValue());
+                for(int i = 3; i <= 6; i++)
+                {
+                    stmt.setNull(i, OracleTypes.NULL);
+                }
+                stmt.execute();
+            } catch (SQLException ex) {
+                Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        
+        productDescCol.setOnEditCommit((TableColumn.CellEditEvent<Product, String> event) -> {
+            Connection con;  
+            try {
+                con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","system","oracle");
+                String query = "{call KJTCompany.UPDATE_PRODUCT(?,?,?,?,?,?)}";
+                CallableStatement stmt = con.prepareCall(query);
+                stmt.setInt(1, event.getTableView().getItems().get(event.getTablePosition().getRow()).getProductID());
+                stmt.setNull(2, OracleTypes.NULL);
+                stmt.setString(3, event.getNewValue());
+                for(int i = 4; i <= 6; i++)
+                {
+                    stmt.setNull(i, OracleTypes.NULL);
+                }
+                stmt.execute();
+            } catch (SQLException ex) {
+                Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
 
         ProductTable.setItems(ProductResultSet);
     }

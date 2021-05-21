@@ -276,7 +276,18 @@ public class employeeTableController implements Initializable{
                     {
                         btn.setGraphic(new ImageView(image));
                         btn.setOnAction((ActionEvent event) -> {
-                            
+                            Connection con;  
+                            try {
+                                con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","system","oracle");
+                                String query = "{call KJTCompany.DELETE_EMPLOYEE(?)}";
+                                CallableStatement stmt = con.prepareCall(query);
+                                stmt.setInt(1, getTableView().getItems().get(getIndex()).getEmployeeID());
+                                stmt.execute();
+                            } catch (SQLException ex) {
+                                Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+
+                            getTableView().getItems().remove(getIndex());
                         });
                     }
 
@@ -301,9 +312,106 @@ public class employeeTableController implements Initializable{
         employeeTitleCol.setCellFactory(TextFieldTableCell.forTableColumn());
         employeeTitleOfCourtesyCol.setCellFactory(TextFieldTableCell.forTableColumn());
         employeeEmailCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        
+        employeeFirstNameCol.setOnEditCommit((TableColumn.CellEditEvent<Employee, String> event) -> {
+            Connection con;  
+            try {
+                con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","system","oracle");
+                String query = "{call KJTCompany.UPDATE_EMPLOYEE(?,?,?,?,?,?,?,?)}";
+                CallableStatement stmt = con.prepareCall(query);
+                stmt.setInt(1, event.getTableView().getItems().get(event.getTablePosition().getRow()).getEmployeeID());
+                stmt.setString(2, event.getNewValue());
+                for(int i = 3; i <= 8; i++)
+                {
+                    stmt.setNull(i, OracleTypes.NULL);
+                }
+                stmt.execute();
+            } catch (SQLException ex) {
+                Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
 
+        employeeLastNameCol.setOnEditCommit((TableColumn.CellEditEvent<Employee, String> event) -> {
+            Connection con;  
+            try {
+                con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","system","oracle");
+                String query = "{call KJTCompany.UPDATE_EMPLOYEE(?,?,?,?,?,?,?,?)}";
+                CallableStatement stmt = con.prepareCall(query);
+                stmt.setInt(1, event.getTableView().getItems().get(event.getTablePosition().getRow()).getEmployeeID());
+                stmt.setNull(2, OracleTypes.NULL);
+                stmt.setString(3, event.getNewValue());
+                for(int i = 4; i <= 8; i++)
+                {
+                    stmt.setNull(i, OracleTypes.NULL);
+                }
+                stmt.execute();
+            } catch (SQLException ex) {
+                Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        
+        employeeTitleCol.setOnEditCommit((TableColumn.CellEditEvent<Employee, String> event) -> {
+            Connection con;  
+            try {
+                con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","system","oracle");
+                String query = "{call KJTCompany.UPDATE_EMPLOYEE(?,?,?,?,?,?,?,?)}";
+                CallableStatement stmt = con.prepareCall(query);
+                stmt.setInt(1, event.getTableView().getItems().get(event.getTablePosition().getRow()).getEmployeeID());
+                for(int i = 2; i <= 3; i++)
+                {
+                    stmt.setNull(i, OracleTypes.NULL);
+                }
+                stmt.setString(4, event.getNewValue());
+                for(int i = 5; i <= 8; i++)
+                {
+                    stmt.setNull(i, OracleTypes.NULL);
+                }
+                stmt.execute();
+            } catch (SQLException ex) {
+                Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        
+        employeeTitleOfCourtesyCol.setOnEditCommit((TableColumn.CellEditEvent<Employee, String> event) -> {
+            Connection con;  
+            try {
+                con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","system","oracle");
+                String query = "{call KJTCompany.UPDATE_EMPLOYEE(?,?,?,?,?,?,?,?)}";
+                CallableStatement stmt = con.prepareCall(query);
+                stmt.setInt(1, event.getTableView().getItems().get(event.getTablePosition().getRow()).getEmployeeID());
+                for(int i = 2; i <= 4; i++)
+                {
+                    stmt.setNull(i, OracleTypes.NULL);
+                }
+                stmt.setString(5, event.getNewValue());
+                for(int i = 6; i <= 8; i++)
+                {
+                    stmt.setNull(i, OracleTypes.NULL);
+                }
+                stmt.execute();
+            } catch (SQLException ex) {
+                Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        
+        employeeEmailCol.setOnEditCommit((TableColumn.CellEditEvent<Employee, String> event) -> {
+            Connection con;  
+            try {
+                con = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","system","oracle");
+                String query = "{call KJTCompany.UPDATE_EMPLOYEE(?,?,?,?,?,?,?,?)}";
+                CallableStatement stmt = con.prepareCall(query);
+                stmt.setInt(1, event.getTableView().getItems().get(event.getTablePosition().getRow()).getEmployeeID());
+                for(int i = 2; i <= 7; i++)
+                {
+                    stmt.setNull(i, OracleTypes.NULL);
+                }
+                stmt.setString(8, event.getNewValue());
+                stmt.execute();
+            } catch (SQLException ex) {
+                Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+        
         EmployeeTable.setItems(EmployeeResultSet);
     }
-
-    
 }
