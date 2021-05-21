@@ -33,16 +33,16 @@
       </Pane>
       <TableView fx:id="CustomerTable" layoutX="170.0" layoutY="248.0" prefHeight="501.0" prefWidth="1066.0" style="-fx-background-color: transparent; -fx-border-color: white;">
         <columns>
-          <TableColumn fx:id="customerIdCol" prefWidth="57.0" text="ID" />
-          <TableColumn fx:id="customerFirstNameCol" prefWidth="108.0" text="Imie" />
-            <TableColumn fx:id="customerLastNameCol" minWidth="1.0" prefWidth="90.0" text="Nazwisko" />
-            <TableColumn fx:id="customerTitleCol" prefWidth="67.0" text="Tytuł" />
+          <TableColumn fx:id="customerIdCol" prefWidth="57.0" text="CustomerID" />
+          <TableColumn fx:id="customerFirstNameCol" prefWidth="108.0" text="FirstName" />
+            <TableColumn fx:id="customerLastNameCol" minWidth="1.0" prefWidth="90.0" text="LastName" />
+            <TableColumn fx:id="customerTitleCol" prefWidth="67.0" text="ContactTitle" />
             <TableColumn fx:id="customerNipCol" prefWidth="129.0" text="NIP" />
-            <TableColumn fx:id="customerAddressCol" prefWidth="140.0" text="Adres" />
-            <TableColumn fx:id="customerPhoneNumberCol" prefWidth="126.0" text="Telefon" />
-            <TableColumn fx:id="customerEmailCol" prefWidth="134.0" text="E-mail" />
-            <TableColumn fx:id="customerUserCol" prefWidth="127.0" text="Użytkownik" />
-            <TableColumn fx:id="delCustomerCol" prefWidth="82.0" text="Usuń" />
+            <TableColumn fx:id="customerAddressCol" prefWidth="140.0" text="Address" />
+            <TableColumn fx:id="customerPhoneNumberCol" prefWidth="126.0" text="PhoneNumber" />
+            <TableColumn fx:id="customerEmailCol" prefWidth="134.0" text="Email" />
+            <TableColumn fx:id="customerUserCol" prefWidth="127.0" text="User" />
+            <TableColumn fx:id="delCustomerCol" prefWidth="82.0" text="Usun" />
         </columns>
       </TableView>
       <Button fx:id="addCustomerButton" onAction="#handleButtonAction" layoutX="43.0" layoutY="204.0" mnemonicParsing="false" prefHeight="95.0" prefWidth="76.0">

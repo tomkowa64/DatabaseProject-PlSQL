@@ -9,28 +9,32 @@ package model;
  *
  * @author Tomasz
  */
-public class Shipper {
-    private int ShipperID;
+public class Supplier {
+    private int SupplierID;
     private String CompanyName;
+    private Address address;
     private int PhoneNumber;
     private String Email;
+    private String WebPage;
 
-    public Shipper() {
+    public Supplier() {
     }
 
-    public Shipper(int ShipperID, String CompanyName, int PhoneNumber, String Email) {
-        this.ShipperID = ShipperID;
+    public Supplier(int SupplierID, String CompanyName, Address address, int PhoneNumber, String Email, String WebPage) {
+        this.SupplierID = SupplierID;
         this.CompanyName = CompanyName;
+        this.address = address;
         this.PhoneNumber = PhoneNumber;
         this.Email = Email;
+        this.WebPage = WebPage;
     }
 
-    public int getShipperID() {
-        return ShipperID;
+    public int getSupplierID() {
+        return SupplierID;
     }
 
-    public void setShipperID(int ShipperID) {
-        this.ShipperID = ShipperID;
+    public void setSupplierID(int SupplierID) {
+        this.SupplierID = SupplierID;
     }
 
     public String getCompanyName() {
@@ -39,6 +43,14 @@ public class Shipper {
 
     public void setCompanyName(String CompanyName) {
         this.CompanyName = CompanyName;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
     }
 
     public int getPhoneNumber() {
@@ -57,10 +69,16 @@ public class Shipper {
         this.Email = Email;
     }
 
+    public String getWebPage() {
+        return WebPage;
+    }
+
+    public void setWebPage(String WebPage) {
+        this.WebPage = WebPage;
+    }
+
     @Override
     public String toString() {
         return CompanyName;
     }
-    
-    
 }

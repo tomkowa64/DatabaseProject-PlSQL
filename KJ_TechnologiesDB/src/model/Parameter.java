@@ -279,7 +279,7 @@ public class Parameter {
 
     @Override
     public String toString() {
-        return "Parameter{" + "ParameterID=" + ParameterID + ", Model=" + Model + ", Type=" + Type + ", Clock=" + Clock + ", Socket=" + Socket + ", Chipset=" + Chipset + ", NumOfCores=" + NumOfCores + ", NumOfThreads=" + NumOfThreads + ", Capacity=" + Capacity + ", Cache=" + Cache + ", Vram=" + Vram + ", Format=" + Format + ", Interface=" + Interface + ", Inputs=" + Inputs + ", ReadSpeed=" + ReadSpeed + ", WriteSpeed=" + WriteSpeed + ", MTBF=" + MTBF + ", TDP=" + TDP + ", Color=" + Color + ", Height=" + Height + ", Width=" + Width + ", Length=" + Length + ", Accessories=" + Accessories + ", Warranty=" + Warranty + ", MaxPower=" + MaxPower + ", ProtectionType=" + ProtectionType + '}';
+        return "Model: " + Model + ", Type: " + Type + ", Clock: " + Clock + ", Socket: " + Socket + ", Chipset: " + Chipset + ", NumOfCores: " + NumOfCores + ", NumOfThreads: " + NumOfThreads + ", Capacity: " + Capacity + ", Cache: " + Cache + ", Vram: " + Vram + ", Format: " + Format + ", Interface: " + Interface + ", Inputs: " + Inputs + ", ReadSpeed: " + ReadSpeed + ", WriteSpeed: " + WriteSpeed + ", MTBF: " + MTBF + ", TDP: " + TDP + ", Color: " + Color + ", Height: " + Height + ", Width: " + Width + ", Length: " + Length + ", Accessories: " + Accessories + ", Warranty: " + Warranty + ", MaxPower: " + MaxPower + ", ProtectionType: " + ProtectionType;
     }
     
     

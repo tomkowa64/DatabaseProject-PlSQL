@@ -5,42 +5,48 @@
  */
 package model;
 
+import java.sql.Date;
+
 /**
  *
  * @author Tomasz
  */
-public class Customer {
-    private int CustomerID;
+public class Employee {
+    private int EmployeeID;
     private String FirstName;
     private String LastName;
-    private String ContactTitle;
-    private long NIP;
+    private String Title;
+    private String TitleOfCourtesy;
+    private String BirthDate;
+    private String HireDate;
     private Address address;
     private int PhoneNumber;
     private String Email;
     private User user;
 
-    public Customer() {
+    public Employee() {
     }
 
-    public Customer(int CustomerID, String FirstName, String LastName, String ContactTitle, long NIP, Address address, int PhoneNumber, String Email, User user) {
-        this.CustomerID = CustomerID;
+    public Employee(int EmployeeID, String FirstName, String LastName, String Title, String TitleOfCourtesy, String BirthDate, String HireDate, Address address, int PhoneNumber, String Email, User user) {
+        this.EmployeeID = EmployeeID;
         this.FirstName = FirstName;
         this.LastName = LastName;
-        this.ContactTitle = ContactTitle;
-        this.NIP = NIP;
+        this.Title = Title;
+        this.TitleOfCourtesy = TitleOfCourtesy;
+        this.BirthDate = BirthDate;
+        this.HireDate = HireDate;
         this.address = address;
         this.PhoneNumber = PhoneNumber;
         this.Email = Email;
         this.user = user;
     }
 
-    public int getCustomerID() {
-        return CustomerID;
+    public int getEmployeeID() {
+        return EmployeeID;
     }
 
-    public void setCustomerID(int CustomerID) {
-        this.CustomerID = CustomerID;
+    public void setEmployeeID(int EmployeeID) {
+        this.EmployeeID = EmployeeID;
     }
 
     public String getFirstName() {
@@ -59,20 +65,36 @@ public class Customer {
         this.LastName = LastName;
     }
 
-    public String getContactTitle() {
-        return ContactTitle;
+    public String getTitle() {
+        return Title;
     }
 
-    public void setContactTitle(String ContactTitle) {
-        this.ContactTitle = ContactTitle;
+    public void setTitle(String Title) {
+        this.Title = Title;
     }
 
-    public long getNIP() {
-        return NIP;
+    public String getTitleOfCourtesy() {
+        return TitleOfCourtesy;
     }
 
-    public void setNIP(long NIP) {
-        this.NIP = NIP;
+    public void setTitleOfCourtesy(String TitleOfCourtesy) {
+        this.TitleOfCourtesy = TitleOfCourtesy;
+    }
+
+    public String getBirthDate() {
+        return BirthDate;
+    }
+
+    public void setBirthDate(String BirthDate) {
+        this.BirthDate = BirthDate;
+    }
+
+    public String getHireDate() {
+        return HireDate;
+    }
+
+    public void setHireDate(String HireDate) {
+        this.HireDate = HireDate;
     }
 
     public Address getAddress() {
@@ -109,9 +131,8 @@ public class Customer {
 
     @Override
     public String toString() {
-        return CustomerID + " - " + FirstName + " " + LastName;
+        return EmployeeID + " - " + FirstName + " " + LastName;
     }
-
-
+    
     
 }

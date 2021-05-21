@@ -5,51 +5,81 @@
  */
 package Controllers;
 
+import java.net.URL;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import javafx.util.Callback;
+import model.Address;
+import model.Category;
+import model.Employee;
+import model.Parameter;
+import model.Product;
+import model.Supplier;
+import model.User;
+import oracle.jdbc.OracleCallableStatement;
+import oracle.jdbc.OracleTypes;
 
-public class productTableController {
+public class productTableController implements Initializable{
 
     @FXML
     private Button goBack;
 
     @FXML
-    private TableView<?> ProductTable;
+    private TableView<Product> ProductTable;
 
     @FXML
-    private TableColumn<?, ?> productIdCol;
+    private TableColumn<Product, Number> productIdCol;
 
     @FXML
-    private TableColumn<?, ?> productNameCol;
+    private TableColumn<Product, String> productNameCol;
 
     @FXML
-    private TableColumn<?, ?> productParametersCol;
+    private TableColumn<Product, Parameter> productParametersCol;
 
     @FXML
-    private TableColumn<?, ?> productDescCol;
+    private TableColumn<Product, String> productDescCol;
 
     @FXML
-    private TableColumn<?, ?> productSupplierCol;
+    private TableColumn<Product, Supplier> productSupplierCol;
 
     @FXML
-    private TableColumn<?, ?> productCategoryCol;
+    private TableColumn<Product, Category> productCategoryCol;
 
     @FXML
-    private TableColumn<?, ?> productPriceCol;
+    private TableColumn<Product, Number> productPriceCol;
 
     @FXML
-    private TableColumn<?, ?> productQuantityCol;
+    private TableColumn<Product, Number> productQuantityCol;
 
     @FXML
-    private TableColumn<?, ?> delProductCol;
+    private TableColumn<Product, Void> delProductCol;
 
     @FXML
     private Button addProductButton;
@@ -86,5 +116,225 @@ public class productTableController {
         stage.show();
     }   
 
+        private List getProductResultSet() throws SQLException{
+        List ll = new LinkedList();
+        try{  
+            try {
+                Class.forName("oracle.jdbc.driver.OracleDriver");
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            Connection con=DriverManager.getConnection(  
+            "jdbc:oracle:thin:@localhost:1521:xe","system","oracle");  
+
+            //PRODUCTS
+            
+            String query = "{call KJTCompany.SELECT_PRODUCTS(?)}";
+            
+            CallableStatement stmt = con.prepareCall(query);
+            
+            stmt.registerOutParameter(1, OracleTypes.CURSOR);
+            stmt.executeQuery();
+            
+            ResultSet cursor = ((OracleCallableStatement)stmt).getCursor(1);
+
+            try{
+            while(cursor.next()){
+                int productId = cursor.getInt("ProductID");
+                String productName = cursor.getString("ProductName");
+                
+                int productParametersId = cursor.getInt("ParametersID");
+                
+                String productDescription = cursor.getString("Description");
+                
+                int productSupplierId = cursor.getInt("SupplierID");
+                
+                int productCategoryId = cursor.getInt("CategoryID");
+                
+                int productPrice = cursor.getInt("Price");               
+                int productUnitsInStock = cursor.getInt("UnitsInStock");
+
+                //PARAMETERS
+
+                String parametersQuery = "{call KJTCompany.SELECT_PARAMETERS(?,?)}";
+
+                CallableStatement parametersStmt = con.prepareCall(parametersQuery);
+                
+                
+                parametersStmt.registerOutParameter(1, OracleTypes.CURSOR);
+                parametersStmt.setInt(2, productParametersId);
+                parametersStmt.executeQuery();
+
+                ResultSet parameterCursor = ((OracleCallableStatement)parametersStmt).getCursor(1);
+                
+                Parameter productParameter = new Parameter();
+                
+                //SUPPLIER
+                
+                String supplierQuery = "{call KJTCompany.SELECT_SUPPLIERS_FOR_PRODUCT(?,?)}";
+
+                CallableStatement supplierStmt = con.prepareCall(supplierQuery);
+                
+                
+                supplierStmt.registerOutParameter(1, OracleTypes.CURSOR);
+                supplierStmt.setInt(2, productSupplierId);
+                supplierStmt.executeQuery();
+
+                ResultSet supplierCursor = ((OracleCallableStatement)supplierStmt).getCursor(1);
+                
+                Supplier productSupplier = new Supplier();
+                
+                //CATEGORY
+                
+                String categoryQuery = "{call KJTCompany.SELECT_CATEGORIES_FOR_PRODUCTS(?,?)}";
+
+                CallableStatement categoryStmt = con.prepareCall(categoryQuery);
+                
+                
+                categoryStmt.registerOutParameter(1, OracleTypes.CURSOR);
+                categoryStmt.setInt(2, productCategoryId);
+                categoryStmt.executeQuery();
+
+                ResultSet categoryCursor = ((OracleCallableStatement)categoryStmt).getCursor(1);
+                
+                Category productCategory = new Category();
+                
+                
+                //PARAMETERS
+                try{
+                    while(parameterCursor.next()){
+                        productParameter.setParameterID(parameterCursor.getInt("ParametersID"));
+                        productParameter.setModel(parameterCursor.getString("Model"));
+                        productParameter.setType(parameterCursor.getString("Type"));
+                        productParameter.setClock(parameterCursor.getDouble("Clock"));
+                        productParameter.setSocket(parameterCursor.getString("Socket"));
+                        productParameter.setChipset(parameterCursor.getString("Chipset"));
+                        productParameter.setNumOfCores(parameterCursor.getInt("NumOfCores"));
+                        productParameter.setNumOfThreads(parameterCursor.getInt("NumOfThreads"));
+                        productParameter.setCapacity(parameterCursor.getDouble("Capacity"));
+                        productParameter.setCache(parameterCursor.getInt("Cache"));
+                        productParameter.setVram(parameterCursor.getInt("VRAM"));
+                        productParameter.setFormat(parameterCursor.getString("Format"));
+                        productParameter.setInterface(parameterCursor.getString("Interface"));
+                        productParameter.setInputs(parameterCursor.getString("Inputs"));
+                        productParameter.setReadSpeed(parameterCursor.getInt("ReadSpeed"));
+                        productParameter.setWriteSpeed(parameterCursor.getInt("WriteSpeed"));
+                        productParameter.setMTBF(parameterCursor.getInt("MTBF"));
+                        productParameter.setTDP(parameterCursor.getInt("TDP"));
+                        productParameter.setColor(parameterCursor.getString("Color"));
+                        productParameter.setHeight(parameterCursor.getInt("Height"));
+                        productParameter.setWidth(parameterCursor.getInt("Width"));
+                        productParameter.setLength(parameterCursor.getInt("Length"));
+                        productParameter.setAccessories(parameterCursor.getString("Accessories"));
+                        productParameter.setWarranty(parameterCursor.getInt("Warranty"));
+                    }
+                }catch (SQLException ex) {
+                    Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                //SUPPLIER
+
+                try{
+                    while(supplierCursor.next()){
+                        productSupplier.setSupplierID(supplierCursor.getInt("SupplierID"));
+                        productSupplier.setCompanyName(supplierCursor.getString("CompanyName"));
+                        productSupplier.setAddress(null);
+                        productSupplier.setPhoneNumber(supplierCursor.getInt("PhoneNumber"));
+                        productSupplier.setEmail(supplierCursor.getString("Email"));
+                        productSupplier.setWebPage(supplierCursor.getString("WebPage"));
+                    }
+                }catch (SQLException ex) {
+                    Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                //Category
+
+                try{
+                    while(categoryCursor.next()){
+                        productCategory.setCategoryId(categoryCursor.getInt("CategoryID"));
+                        productCategory.setCategoryName(categoryCursor.getString("CategoryName"));
+                        productCategory.setDescription(categoryCursor.getString("Description"));
+                    }
+                }catch (SQLException ex) {
+                    Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                Product product = new Product(productId, productName, productParameter, productDescription, productSupplier, productCategory, productPrice, productUnitsInStock);
+                
+                
+                ll.add(product); 
+            }
+            }
+                catch (SQLException ex) {
+                Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            con.close();  
+        }
+        catch(Exception e){ 
+            System.out.println(e);
+        }
+        return ll;
+    }
+    
+  
+        
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        ObservableList<Product> ProductResultSet = null;
+        try {
+            ProductResultSet = FXCollections.observableArrayList(getProductResultSet());
+        } catch (SQLException ex) {
+            Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        ProductTable.setEditable(true);
+        
+        
+        productIdCol.setCellValueFactory(new PropertyValueFactory<Product,Number>("ProductID"));
+        productNameCol.setCellValueFactory(new PropertyValueFactory<Product,String>("ProductName"));
+        productParametersCol.setCellValueFactory(new PropertyValueFactory<Product,Parameter>("Parameter"));
+        productDescCol.setCellValueFactory(new PropertyValueFactory<Product,String>("Description"));
+        productSupplierCol.setCellValueFactory(new PropertyValueFactory<Product,Supplier>("Supplier"));
+        productCategoryCol.setCellValueFactory(new PropertyValueFactory<Product,Category>("Category"));
+        productPriceCol.setCellValueFactory(new PropertyValueFactory<Product,Number>("Price"));
+        productQuantityCol.setCellValueFactory(new PropertyValueFactory<Product,Number>("UnitsInStock"));
+        
+        delProductCol.setCellFactory(
+        new Callback<TableColumn<Product, Void>, TableCell<Product, Void>>() {
+            @Override
+            public TableCell<Product, Void> call(final TableColumn<Product, Void> param) {
+                final TableCell<Product, Void> cell = new TableCell<Product, Void>() {
+                    
+                    Image image = new Image(getClass().getResourceAsStream("/img/icons/trash.png"), 32, 32, false, false);
+                    private final Button btn = new Button();
+
+                    {
+                        btn.setGraphic(new ImageView(image));
+                        btn.setOnAction((ActionEvent event) -> {
+                            
+                        });
+                    }
+
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            setGraphic(btn);
+                        }
+                    }
+                };
+                cell.setAlignment(Pos.CENTER);
+                return cell;
+            }
+         }
+        ); 
+        
+        productNameCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        productDescCol.setCellFactory(TextFieldTableCell.forTableColumn());
+
+        ProductTable.setItems(ProductResultSet);
+    }
     
 }

@@ -5,54 +5,86 @@
  */
 package Controllers;
 
+import java.net.URL;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import javafx.util.Callback;
+import model.Address;
+import model.Category;
+import model.Customer;
+import model.Employee;
+import model.Order;
+import model.Parameter;
+import model.Product;
+import model.Shipper;
+import model.Supplier;
+import oracle.jdbc.OracleCallableStatement;
+import oracle.jdbc.OracleTypes;
 
-public class orderTableController {
+public class orderTableController implements Initializable{
 
     @FXML
     private Button goBack;
 
     @FXML
-    private TableView<?> OrderTable;
+    private TableView<Order> OrderTable;
 
     @FXML
-    private TableColumn<?, ?> orderIdCol;
+    private TableColumn<Order, Number> orderIdCol;
 
     @FXML
-    private TableColumn<?, ?> orderCustomerCol;
+    private TableColumn<Order, Customer> orderCustomerCol;
 
     @FXML
-    private TableColumn<?, ?> orderEmployeeCol;
+    private TableColumn<Order, Employee> orderEmployeeCol;
 
     @FXML
-    private TableColumn<?, ?> orderOrderDateCol;
+    private TableColumn<Order, String> orderOrderDateCol;
 
     @FXML
-    private TableColumn<?, ?> orderReqDateCol;
+    private TableColumn<Order, String> orderReqDateCol;
 
     @FXML
-    private TableColumn<?, ?> orderShipDateCol;
+    private TableColumn<Order, String> orderShipDateCol;
 
     @FXML
-    private TableColumn<?, ?> orderShipperCol;
+    private TableColumn<Order, Shipper> orderShipperCol;
 
     @FXML
-    private TableColumn<?, ?> orderShipNameCol;
+    private TableColumn<Order, String> orderShipNameCol;
 
     @FXML
-    private TableColumn<?, ?> orderAddressCol;
+    private TableColumn<Order, Address> orderAddressCol;
 
     @FXML
-    private TableColumn<?, ?> delOrderCol;
+    private TableColumn<Order, Void> delOrderCol;
 
     @FXML
     private Button addOrderButton;
@@ -86,5 +118,247 @@ public class orderTableController {
         stage.show();
     }   
 
+        private List getOrderResultSet() throws SQLException{
+        List ll = new LinkedList();
+        try{  
+            try {
+                Class.forName("oracle.jdbc.driver.OracleDriver");
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
 
+            Connection con=DriverManager.getConnection(  
+            "jdbc:oracle:thin:@localhost:1521:xe","system","oracle");  
+
+            //ORDERS
+            
+            String query = "{call KJTCompany.SELECT_ORDERS(?)}";
+            
+            CallableStatement stmt = con.prepareCall(query);
+            
+            stmt.registerOutParameter(1, OracleTypes.CURSOR);
+            stmt.executeQuery();
+            
+            ResultSet cursor = ((OracleCallableStatement)stmt).getCursor(1);
+
+            try{
+            while(cursor.next()){
+                int orderId = cursor.getInt("OrderID");
+                
+                int customerId = cursor.getInt("CustomerID");
+                
+                int employeeId = cursor.getInt("EmployeeID");
+                
+                String orderDate = cursor.getString("OrderDate");
+                String requiredDate = cursor.getString("RequiredDate");
+                String shippedDate = cursor.getString("ShippedDate");
+                
+                int shipperId = cursor.getInt("ShipperID");
+                
+                String shipName = cursor.getString("ShipName");
+                
+                int addressId = cursor.getInt("ShipAddressID");
+
+                //CUSTOMERS
+
+                String customerQuery = "{call KJTCompany.SELECT_CUSTOMERS_FOR_ORDER(?,?)}";
+
+                CallableStatement customerStmt = con.prepareCall(customerQuery);
+                
+                
+                customerStmt.registerOutParameter(1, OracleTypes.CURSOR);
+                customerStmt.setInt(2, customerId);
+                customerStmt.executeQuery();
+
+                ResultSet customerCursor = ((OracleCallableStatement)customerStmt).getCursor(1);
+                
+                Customer orderCustomer = new Customer();
+                
+                //EMPLOYEE
+                
+                String employeeQuery = "{call KJTCompany.SELECT_EMPLOYEES_FOR_ORDER(?,?)}";
+
+                CallableStatement employeeStmt = con.prepareCall(employeeQuery);
+                
+                
+                employeeStmt.registerOutParameter(1, OracleTypes.CURSOR);
+                employeeStmt.setInt(2, employeeId);
+                employeeStmt.executeQuery();
+
+                ResultSet employeeCursor = ((OracleCallableStatement)employeeStmt).getCursor(1);
+                
+                Employee orderEmployee = new Employee();
+                
+                //SHIPPER
+                
+                String shipperQuery = "{call KJTCompany.SELECT_SHIPPERS_FOR_ORDER(?,?)}";
+
+                CallableStatement shipperStmt = con.prepareCall(shipperQuery);
+                
+                
+                shipperStmt.registerOutParameter(1, OracleTypes.CURSOR);
+                shipperStmt.setInt(2, shipperId);
+                shipperStmt.executeQuery();
+
+                ResultSet shipperCursor = ((OracleCallableStatement)shipperStmt).getCursor(1);
+                
+                Shipper orderShipper = new Shipper();
+                
+                //ADDRESS
+                
+                String addressQuery = "{call KJTCompany.SELECT_ADDRESSES(?,?)}";
+
+                CallableStatement addressStmt = con.prepareCall(addressQuery);
+                
+                
+                addressStmt.registerOutParameter(1, OracleTypes.CURSOR);
+                addressStmt.setInt(2, addressId);
+                addressStmt.executeQuery();
+
+                ResultSet addressCursor = ((OracleCallableStatement)addressStmt).getCursor(1);
+                
+                Address orderAddress = new Address();
+                
+                
+                //CUSTOMER
+                try{
+                    while(customerCursor.next()){
+                        orderCustomer.setCustomerID(customerCursor.getInt("CustomerID"));
+                        orderCustomer.setFirstName(customerCursor.getString("FirstName"));
+                        orderCustomer.setLastName(customerCursor.getString("LastName"));
+                        orderCustomer.setContactTitle(null);
+                        orderCustomer.setNIP(0);
+                        orderCustomer.setAddress(null);
+                        orderCustomer.setPhoneNumber(0);
+                        orderCustomer.setEmail(null);
+                        orderCustomer.setUser(null);
+                    }
+                }catch (SQLException ex) {
+                    Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                //EMPLOYEE
+                try{
+                    while(employeeCursor.next()){
+                        orderEmployee.setEmployeeID(employeeCursor.getInt("EmployeeID"));
+                        orderEmployee.setFirstName(employeeCursor.getString("FirstName"));
+                        orderEmployee.setLastName(employeeCursor.getString("LastName"));
+                        orderEmployee.setTitle(null);
+                        orderEmployee.setTitleOfCourtesy(null);
+                        orderEmployee.setBirthDate(null);
+                        orderEmployee.setHireDate(null);
+                        orderEmployee.setAddress(null);
+                        orderEmployee.setPhoneNumber(0);
+                        orderEmployee.setEmail(null);
+                        orderEmployee.setUser(null);
+                    }
+                }catch (SQLException ex) {
+                    Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                //SHIPPER
+                try{
+                    while(shipperCursor.next()){
+                        orderShipper.setShipperID(0);
+                        orderShipper.setCompanyName(shipperCursor.getString("CompanyName"));
+                        orderShipper.setPhoneNumber(0);
+                        orderShipper.setEmail(null);
+                    }
+                }catch (SQLException ex) {
+                    Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                //SHIPPER
+                try{
+                    while(addressCursor.next()){
+                        orderAddress.setAddressID(0);
+                        orderAddress.setAddress(addressCursor.getString("Address"));
+                        orderAddress.setCity(addressCursor.getString("City"));
+                        orderAddress.setRegion(null);
+                        orderAddress.setPostalCode(null);
+                        orderAddress.setCountry(addressCursor.getString("Country"));
+                    }
+                }catch (SQLException ex) {
+                    Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                
+                Order order = new Order(orderId, orderCustomer, orderEmployee, orderDate, requiredDate, shippedDate, orderShipper, shipName, orderAddress);
+                
+                
+                ll.add(order); 
+            }
+            }
+                catch (SQLException ex) {
+                Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            con.close();  
+        }
+        catch(Exception e){ 
+            System.out.println(e);
+        }
+        return ll;
+    }
+    
+  
+        
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        ObservableList<Order> OrderResultSet = null;
+        try {
+            OrderResultSet = FXCollections.observableArrayList(getOrderResultSet());
+        } catch (SQLException ex) {
+            Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        OrderTable.setEditable(true);
+        
+        
+        orderIdCol.setCellValueFactory(new PropertyValueFactory<Order,Number>("OrderID"));
+        orderCustomerCol.setCellValueFactory(new PropertyValueFactory<Order,Customer>("Customer"));
+        orderEmployeeCol.setCellValueFactory(new PropertyValueFactory<Order,Employee>("Employee"));
+        orderOrderDateCol.setCellValueFactory(new PropertyValueFactory<Order,String>("OrderDate"));
+        orderReqDateCol.setCellValueFactory(new PropertyValueFactory<Order,String>("RequiredDate"));
+        orderShipDateCol.setCellValueFactory(new PropertyValueFactory<Order,String>("ShippedDate"));
+        orderShipperCol.setCellValueFactory(new PropertyValueFactory<Order,Shipper>("Shipper"));
+        orderShipNameCol.setCellValueFactory(new PropertyValueFactory<Order,String>("ShipName"));
+        orderAddressCol.setCellValueFactory(new PropertyValueFactory<Order,Address>("Address"));
+        
+        delOrderCol.setCellFactory(
+        new Callback<TableColumn<Order, Void>, TableCell<Order, Void>>() {
+            @Override
+            public TableCell<Order, Void> call(final TableColumn<Order, Void> param) {
+                final TableCell<Order, Void> cell = new TableCell<Order, Void>() {
+                    
+                    Image image = new Image(getClass().getResourceAsStream("/img/icons/trash.png"), 32, 32, false, false);
+                    private final Button btn = new Button();
+
+                    {
+                        btn.setGraphic(new ImageView(image));
+                        btn.setOnAction((ActionEvent event) -> {
+                            
+                        });
+                    }
+
+                    @Override
+                    public void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            setGraphic(btn);
+                        }
+                    }
+                };
+                cell.setAlignment(Pos.CENTER);
+                return cell;
+            }
+         }
+        ); 
+        
+        orderReqDateCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        orderShipNameCol.setCellFactory(TextFieldTableCell.forTableColumn());
+
+        OrderTable.setItems(OrderResultSet);
+    }
+    
 }

@@ -76,7 +76,7 @@ public class Address {
 
     @Override
     public String toString() {
-        return "Address{" + "AddressID=" + AddressID + ", Address=" + Address + ", City=" + City + ", Region=" + Region + ", PostalCode=" + PostalCode + ", Country=" + Country + '}';
+       return Address + ", " + City + ", " + Country;
     }
 
     

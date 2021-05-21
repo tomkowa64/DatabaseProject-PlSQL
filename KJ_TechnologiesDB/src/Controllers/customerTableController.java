@@ -124,31 +124,117 @@ public class customerTableController implements Initializable{
             Connection con=DriverManager.getConnection(  
             "jdbc:oracle:thin:@localhost:1521:xe","system","oracle");  
 
+            //CUSTOMERS
+            
             String query = "{call KJTCompany.SELECT_CUSTOMERS(?)}";
             
             CallableStatement stmt = con.prepareCall(query);
             
             stmt.registerOutParameter(1, OracleTypes.CURSOR);
-            stmt.executeUpdate();
+            stmt.executeQuery();
             
             ResultSet cursor = ((OracleCallableStatement)stmt).getCursor(1);
-            
+
+            try{
             while(cursor.next()){
                 int customerId = cursor.getInt("CustomerID");
-                String customerFirstName = cursor.getString("FirstName");
-                String customerLastName = cursor.getString("LastName");
-                String customerTitle = cursor.getString("ContactTitle");
-                int customerNIP = cursor.getInt("NIP");
-                Address customerAddress = cursor.getObject(, Address);
+                String customerFirstName = cursor.getString("FIRSTNAME");
+                String customerLastName = cursor.getString("LASTNAME");
+                String customerTitle = cursor.getString("CONTACTTITLE");
+                long customerNIP = cursor.getLong("NIP");
+                
+                int customerAddressId = 0;
+                customerAddressId = cursor.getInt("ADDRESSID");
+
+                //ADDRESSES
+
+                String addressQuery = "{call KJTCompany.SELECT_ADDRESSES(?,?)}";
+
+                CallableStatement addressStmt = con.prepareCall(addressQuery);
+                
+                
+                addressStmt.registerOutParameter(1, OracleTypes.CURSOR);
+                addressStmt.setInt(2, customerAddressId);
+                addressStmt.executeQuery();
+
+                ResultSet addressCursor = ((OracleCallableStatement)addressStmt).getCursor(1);
+                
+                Address customerAddress = new Address();
+                
+                
                 int customerPhoneNumber = cursor.getInt("PhoneNumber");
                 String customerEmail = cursor.getString("Email");
-                int customerUserID = cursor.getInt("UserID");
+                
+                int customerUserId = 0; 
+                customerUserId = cursor.getInt("UserID");
                 
                 
-                Customer customer = new Customer(customerId, customerFirstName, customerLastName, customerTitle, customerNIP, )
-                ll.add(category); 
+                try{
+                    while(addressCursor.next()){
+                        customerAddress.setAddressID(addressCursor.getInt("AddressID"));
+                        customerAddress.setAddress(addressCursor.getString("Address"));
+                        customerAddress.setCity(addressCursor.getString("City"));
+                        customerAddress.setRegion(addressCursor.getString("Region"));
+                        customerAddress.setPostalCode(addressCursor.getString("Postalcode"));
+                        customerAddress.setCountry(addressCursor.getString("Country"));
+
+                    }
+                }catch (SQLException ex) {
+                    Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                //USERS
+
+                String usersQuery = "{call KJTUser.SELECT_USERS(?,?)}";
+
+                CallableStatement usersStmt = con.prepareCall(usersQuery);
+
+                usersStmt.registerOutParameter(1, OracleTypes.CURSOR);
+                usersStmt.setInt(2, customerUserId);
+                usersStmt.executeQuery();
+
+                ResultSet userCursor = ((OracleCallableStatement)usersStmt).getCursor(1);
+                User customerUser = new User();
+                
+                
+                try{
+                    while(userCursor.next()){
+                        customerUser.setUserID(userCursor.getInt("UserID"));
+                        
+                        if(userCursor.getString("Login") == null){
+                            customerUser.setLogin(" ");
+                        }
+                        else{
+                            customerUser.setLogin(userCursor.getString("Login"));
+                        }
+                        if(userCursor.getString("Password") == null){
+                            customerUser.setPassword(" ");
+                        }
+                        else{
+                            customerUser.setPassword(userCursor.getString("Password"));
+                        }
+                        if(userCursor.getString("AccountType") == null){
+                            customerUser.setAccountType(" ");
+                        }
+                        else{
+                            customerUser.setAccountType(userCursor.getString("AccountType"));
+                        }
+                        
+                    }    
+                }catch (SQLException ex) {
+                    Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                
+                Customer customer = new Customer(customerId, customerFirstName, customerLastName, customerTitle, customerNIP, customerAddress, customerPhoneNumber,
+                customerEmail, customerUser);
+                
+                
+                ll.add(customer); 
             }
-            
+            }
+                catch (SQLException ex) {
+                Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
+            }
             con.close();  
         }
         catch(Exception e){ 
@@ -171,15 +257,15 @@ public class customerTableController implements Initializable{
         CustomerTable.setEditable(true);
         
         
-        customerIdCol.setCellValueFactory(new PropertyValueFactory<Customer,Number>("CusomerId"));
+        customerIdCol.setCellValueFactory(new PropertyValueFactory<Customer,Number>("CustomerID"));
         customerFirstNameCol.setCellValueFactory(new PropertyValueFactory<Customer,String>("FirstName"));
         customerLastNameCol.setCellValueFactory(new PropertyValueFactory<Customer,String>("LastName"));
         customerTitleCol.setCellValueFactory(new PropertyValueFactory<Customer,String>("ContactTitle"));
         customerNipCol.setCellValueFactory(new PropertyValueFactory<Customer,Number>("NIP"));
-        customerAddressCol.setCellValueFactory(new PropertyValueFactory<Customer,Address>("AddressID"));
+        customerAddressCol.setCellValueFactory(new PropertyValueFactory<Customer,Address>("Address"));
         customerPhoneNumberCol.setCellValueFactory(new PropertyValueFactory<Customer,Number>("PhoneNumber"));
         customerEmailCol.setCellValueFactory(new PropertyValueFactory<Customer,String>("Email"));
-        customerUserCol.setCellValueFactory(new PropertyValueFactory<Customer,User>("UserID"));
+        customerUserCol.setCellValueFactory(new PropertyValueFactory<Customer,User>("User"));
         
         delCustomerCol.setCellFactory(
         new Callback<TableColumn<Customer, Void>, TableCell<Customer, Void>>() {
