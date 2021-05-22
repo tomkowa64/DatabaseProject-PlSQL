@@ -33,6 +33,11 @@ public class Product {
         this.UnitsInStock = UnitsInStock;
     }
 
+    public Product(int productId, String productName) {
+        this.ProductID = productId;
+        this.ProductName = productName;
+    }
+
     public int getProductID() {
         return ProductID;
     }

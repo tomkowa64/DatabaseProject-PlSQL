@@ -284,6 +284,10 @@ public class orderTableController implements Initializable{
                     Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 
+                customerCursor.close();
+                addressCursor.close();
+                shipperCursor.close();
+                employeeCursor.close();
                 
                 Order order = new Order(orderId, orderCustomer, orderEmployee, orderDate, requiredDate, shippedDate, orderShipper, shipName, orderAddress);
                 
@@ -294,6 +298,7 @@ public class orderTableController implements Initializable{
                 catch (SQLException ex) {
                 Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
             }
+            cursor.close();
             con.close();  
         }
         catch(Exception e){ 

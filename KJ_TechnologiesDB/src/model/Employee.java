@@ -26,6 +26,12 @@ public class Employee {
 
     public Employee() {
     }
+    
+    public Employee(int EmployeeID, String FirstName, String LastName) {
+        this.EmployeeID = EmployeeID;
+        this.FirstName = FirstName;
+        this.LastName = LastName;
+    }
 
     public Employee(int EmployeeID, String FirstName, String LastName, String Title, String TitleOfCourtesy, String BirthDate, String HireDate, Address address, int PhoneNumber, String Email, User user) {
         this.EmployeeID = EmployeeID;
