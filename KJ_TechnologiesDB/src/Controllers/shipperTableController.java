@@ -14,10 +14,12 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -37,6 +39,7 @@ import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import model.Shipper;
+import model.Supplier;
 import oracle.jdbc.OracleCallableStatement;
 import oracle.jdbc.OracleTypes;
 
@@ -134,7 +137,29 @@ public class shipperTableController implements Initializable{
         return ll;
     }
     
-  
+    private boolean searchFindsOrder(Shipper s, String searchText){
+        if(s.getEmail() != null){
+        return (s.getCompanyName().toLowerCase().contains(searchText.toLowerCase())) ||
+                (s.getEmail().toLowerCase().contains(searchText.toLowerCase()));
+        }
+        else{
+            return (s.getCompanyName().toLowerCase().contains(searchText.toLowerCase()));
+        }
+    }
+    
+    private Predicate<Shipper> createPredicate(String searchText){
+        return item -> {
+            if (searchText == null || searchText.isEmpty()) return true;
+            return searchFindsOrder(item, searchText);
+        };
+    }
+    
+    @FXML
+    private void handleResetFilterButtonAction (ActionEvent event) throws Exception {
+        if(event.getSource()==filterButton){
+            filterInput.setText(null);
+        }
+    }
         
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -144,6 +169,12 @@ public class shipperTableController implements Initializable{
         } catch (SQLException ex) {
             Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        FilteredList<Shipper> filteredData = new FilteredList<Shipper>(FXCollections.observableList(ShippersResultSet));
+        
+        filterInput.textProperty().addListener((observable, oldValue, newValue) ->
+            filteredData.setPredicate(createPredicate(newValue))
+        );
         
         ShipperTable.setEditable(true);
         
@@ -231,6 +262,6 @@ public class shipperTableController implements Initializable{
             }
         });
 
-        ShipperTable.setItems(ShippersResultSet);
+        ShipperTable.setItems(filteredData);
     }
 }

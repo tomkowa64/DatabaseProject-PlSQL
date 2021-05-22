@@ -49,7 +49,7 @@
          </graphic>
       </Button>
       <TextField fx:id="filterInput" layoutX="170.0" layoutY="204.0" prefHeight="38.0" prefWidth="204.0" />
-      <Button fx:id="filterButton" layoutX="385.0" layoutY="202.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="29.0">
+      <Button fx:id="filterButton" onAction="#handleResetFilterButtonAction" layoutX="385.0" layoutY="202.0" mnemonicParsing="false" prefHeight="43.0" prefWidth="29.0">
          <graphic>
             <ImageView fitHeight="20.0" fitWidth="19.0" pickOnBounds="true" preserveRatio="true">
                <image>

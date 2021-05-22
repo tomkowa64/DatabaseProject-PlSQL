@@ -14,10 +14,12 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -276,7 +278,31 @@ public class productTableController implements Initializable{
         return ll;
     }
     
-  
+    private boolean searchFindsOrder(Product p, String searchText){
+        if(p.getDescription() != null){
+        return (p.getProductName().toLowerCase().contains(searchText.toLowerCase())) ||
+                (p.getDescription().toLowerCase().contains(searchText.toLowerCase())) ||
+                (Integer.valueOf(p.getPrice()).equals(searchText.toLowerCase()));
+        }
+        else{
+            return (p.getProductName().toLowerCase().contains(searchText.toLowerCase())) ||
+                (Integer.valueOf(p.getPrice()).equals(searchText.toLowerCase()));
+        }
+    }
+    
+    private Predicate<Product> createPredicate(String searchText){
+        return item -> {
+            if (searchText == null || searchText.isEmpty()) return true;
+            return searchFindsOrder(item, searchText);
+        };
+    }
+    
+    @FXML
+    private void handleResetFilterButtonAction (ActionEvent event) throws Exception {
+        if(event.getSource()==filterButton){
+            filterInput.setText(null);
+        }
+    } 
         
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -286,6 +312,12 @@ public class productTableController implements Initializable{
         } catch (SQLException ex) {
             Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        FilteredList<Product> filteredData = new FilteredList<Product>(FXCollections.observableList(ProductResultSet));
+        
+        filterInput.textProperty().addListener((observable, oldValue, newValue) ->
+            filteredData.setPredicate(createPredicate(newValue))
+        );
         
         ProductTable.setEditable(true);
         
@@ -382,7 +414,7 @@ public class productTableController implements Initializable{
             }
         });
 
-        ProductTable.setItems(ProductResultSet);
+        ProductTable.setItems(filteredData);
     }
     
 }

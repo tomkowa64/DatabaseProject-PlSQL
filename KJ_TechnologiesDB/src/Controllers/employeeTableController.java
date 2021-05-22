@@ -14,10 +14,12 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -39,6 +41,7 @@ import javafx.util.Callback;
 import model.Address;
 import model.Customer;
 import model.Employee;
+import model.Supplier;
 import model.User;
 import oracle.jdbc.OracleCallableStatement;
 import oracle.jdbc.OracleTypes;
@@ -238,7 +241,24 @@ public class employeeTableController implements Initializable{
         return ll;
     }
     
-  
+    private boolean searchFindsOrder(Employee e, String searchText){
+        return (e.getFirstName().toLowerCase().contains(searchText.toLowerCase())) ||
+                (e.getLastName().toLowerCase().contains(searchText.toLowerCase()));
+    }
+    
+    private Predicate<Employee> createPredicate(String searchText){
+        return item -> {
+            if (searchText == null || searchText.isEmpty()) return true;
+            return searchFindsOrder(item, searchText);
+        };
+    }
+    
+    @FXML
+    private void handleResetFilterButtonAction (ActionEvent event) throws Exception {
+        if(event.getSource()==filterButton){
+            filterInput.setText(null);
+        }
+    }
         
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -248,6 +268,12 @@ public class employeeTableController implements Initializable{
         } catch (SQLException ex) {
             Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        FilteredList<Employee> filteredData = new FilteredList<Employee>(FXCollections.observableList(EmployeeResultSet));
+        
+        filterInput.textProperty().addListener((observable, oldValue, newValue) ->
+            filteredData.setPredicate(createPredicate(newValue))
+        );
         
         EmployeeTable.setEditable(true);
         
@@ -412,6 +438,6 @@ public class employeeTableController implements Initializable{
             }
         });
         
-        EmployeeTable.setItems(EmployeeResultSet);
+        EmployeeTable.setItems(filteredData);
     }
 }

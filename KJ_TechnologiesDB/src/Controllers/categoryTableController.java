@@ -15,10 +15,12 @@ import java.sql.Statement;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -133,7 +135,23 @@ public class categoryTableController implements Initializable{
         return ll;
     }
     
-  
+    private boolean searchFindsOrder(Category k, String searchText){
+        return (k.getCategoryName().toLowerCase().contains(searchText.toLowerCase()));
+    }
+    
+    private Predicate<Category> createPredicate(String searchText){
+        return order -> {
+            if (searchText == null || searchText.isEmpty()) return true;
+            return searchFindsOrder(order, searchText);
+        };
+    }
+    
+    @FXML
+    private void handleResetFilterButtonAction (ActionEvent event) throws Exception {
+        if(event.getSource()==filterButton){
+            filterInput.setText(null);
+        }
+    }
         
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -143,6 +161,12 @@ public class categoryTableController implements Initializable{
         } catch (SQLException ex) {
             Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        FilteredList<Category> filteredData = new FilteredList<Category>(FXCollections.observableList(CategoriesResultSet));
+        
+        filterInput.textProperty().addListener((observable, oldValue, newValue) ->
+            filteredData.setPredicate(createPredicate(newValue))
+        );
         
         CategoryTable.setEditable(true);
         
@@ -227,6 +251,6 @@ public class categoryTableController implements Initializable{
         categoryNameCol.setCellFactory(TextFieldTableCell.forTableColumn());
         categoryDescCol.setCellFactory(TextFieldTableCell.forTableColumn());
 
-        CategoryTable.setItems(CategoriesResultSet);
+        CategoryTable.setItems(filteredData);
     }
 }

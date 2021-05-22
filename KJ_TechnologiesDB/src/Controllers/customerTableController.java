@@ -14,10 +14,12 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -243,7 +245,26 @@ public class customerTableController implements Initializable{
         return ll;
     }
     
-  
+    private boolean searchFindsOrder(Customer c, String searchText){
+        return (c.getFirstName().toLowerCase().contains(searchText.toLowerCase())) ||
+                (c.getLastName().toLowerCase().contains(searchText.toLowerCase()));
+
+    }
+    
+    private Predicate<Customer> createPredicate(String searchText){
+        return item -> {
+            if (searchText == null || searchText.isEmpty()) return true;
+            return searchFindsOrder(item, searchText);
+        };
+    }
+    
+    @FXML
+    private void handleResetFilterButtonAction (ActionEvent event) throws Exception {
+        if(event.getSource()==filterButton){
+            filterInput.setText(null);
+        }
+    }
+        
         
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -253,6 +274,12 @@ public class customerTableController implements Initializable{
         } catch (SQLException ex) {
             Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        FilteredList<Customer> filteredData = new FilteredList<Customer>(FXCollections.observableList(CustomersResultSet));
+        
+        filterInput.textProperty().addListener((observable, oldValue, newValue) ->
+            filteredData.setPredicate(createPredicate(newValue))
+        );
         
         CustomerTable.setEditable(true);
         
@@ -390,7 +417,7 @@ public class customerTableController implements Initializable{
             }
         });
 
-        CustomerTable.setItems(CustomersResultSet);
+        CustomerTable.setItems(filteredData);
     }
     
     

@@ -14,10 +14,12 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -299,7 +301,34 @@ public class orderTableController implements Initializable{
         return ll;
     }
     
-  
+    private boolean searchFindsOrder(Order o, String searchText){
+        if(o.getShipName() != null){
+            return (o.getShipName().toLowerCase().contains(searchText.toLowerCase())) ||
+                    (o.getEmployee().getFirstName().toLowerCase().contains(searchText.toLowerCase())) ||
+                    (o.getEmployee().getLastName().toLowerCase().contains(searchText.toLowerCase())) ||
+                    (o.getCustomer().getLastName().toLowerCase().contains(searchText.toLowerCase())) ||
+                    (o.getCustomer().getFirstName().toLowerCase().contains(searchText.toLowerCase()));
+        }
+        else{
+            return 
+                    (o.getEmployee().getFirstName().toLowerCase().contains(searchText.toLowerCase())) ||
+                    (o.getCustomer().getFirstName().toLowerCase().contains(searchText.toLowerCase()));
+        }
+    }
+    
+    private Predicate<Order> createPredicate(String searchText){
+        return item -> {
+            if (searchText == null || searchText.isEmpty()) return true;
+            return searchFindsOrder(item, searchText);
+        };
+    }
+    
+    @FXML
+    private void handleResetFilterButtonAction (ActionEvent event) throws Exception {
+        if(event.getSource()==filterButton){
+            filterInput.setText(null);
+        }
+    }
         
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -309,6 +338,12 @@ public class orderTableController implements Initializable{
         } catch (SQLException ex) {
             Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
         }
+        
+        FilteredList<Order> filteredData = new FilteredList<Order>(FXCollections.observableList(OrderResultSet));
+        
+        filterInput.textProperty().addListener((observable, oldValue, newValue) ->
+            filteredData.setPredicate(createPredicate(newValue))
+        );
         
         OrderTable.setEditable(true);
         
@@ -410,7 +445,7 @@ public class orderTableController implements Initializable{
             }
         });
 
-        OrderTable.setItems(OrderResultSet);
+        OrderTable.setItems(filteredData);
     }
     
 }
