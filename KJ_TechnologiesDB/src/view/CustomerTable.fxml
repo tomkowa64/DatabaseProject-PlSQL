@@ -54,7 +54,7 @@
             </ImageView>
          </graphic>
       </Button>
-      <Button fx:id="showBestCustomersButton" layoutX="43.0" layoutY="353.0" mnemonicParsing="false" prefHeight="95.0" prefWidth="76.0">
+      <Button fx:id="showBestCustomersButton" onAction="#setBestCustomers" layoutX="43.0" layoutY="353.0" mnemonicParsing="false" prefHeight="95.0" prefWidth="76.0">
          <graphic>
             <ImageView fitHeight="90.0" fitWidth="70.0" pickOnBounds="true" preserveRatio="true">
                <image>
