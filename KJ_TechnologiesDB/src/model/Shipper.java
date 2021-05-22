@@ -25,6 +25,11 @@ public class Shipper {
         this.Email = Email;
     }
 
+    public Shipper(int shipperId, String companyName) {
+        this.ShipperID = shipperId;
+        this.CompanyName = companyName;
+    }
+
     public int getShipperID() {
         return ShipperID;
     }

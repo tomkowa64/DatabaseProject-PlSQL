@@ -22,6 +22,12 @@ public class Customer {
 
     public Customer() {
     }
+    
+    public Customer(int CustomerID, String FirstName, String LastName){
+        this.CustomerID = CustomerID;
+        this.FirstName = FirstName;
+        this.LastName = LastName;
+    }
 
     public Customer(int CustomerID, String FirstName, String LastName, String ContactTitle, long NIP, Address address, int PhoneNumber, String Email, User user) {
         this.CustomerID = CustomerID;
