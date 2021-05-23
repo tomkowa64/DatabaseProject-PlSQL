@@ -265,16 +265,20 @@ public class productTableController implements Initializable{
                 
                 Product product = new Product(productId, productName, productParameter, productDescription, productSupplier, productCategory, productPrice, productUnitsInStock);
                 
-                
+                supplierCursor.close();
+                categoryCursor.close();
+                parameterCursor.close();
                 ll.add(product); 
             }
             }
                 catch (SQLException ex) {
                 Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
+            cursor.close();
             con.close();  
         }
-        catch(Exception e){ 
+        catch(SQLException e){ 
             System.out.println(e);
         }
         return ll;
@@ -425,13 +429,17 @@ public class productTableController implements Initializable{
                 
                 Product product = new Product(productId, productName, productParameter, productDescription, productSupplier, productCategory, productPrice, productUnitsInStock);
                 
-                
+                supplierCursor.close();
+                categoryCursor.close();
+                parameterCursor.close();
                 ll.add(product); 
             }
             }
                 catch (SQLException ex) {
                 Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
+            cursor.close();
             con.close();  
         }
         catch(Exception e){ 

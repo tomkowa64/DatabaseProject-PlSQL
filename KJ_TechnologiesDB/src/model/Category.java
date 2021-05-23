@@ -14,15 +14,11 @@ public class Category {
     public Category() {
     }
 
-    
-    
     public Category(int categoryId, String categoryName, String Description) {
         this.categoryId = categoryId;
         this.categoryName = categoryName;
         this.Description = Description;
     }
-
-    
     
     public int getCategoryId() {
         return categoryId;

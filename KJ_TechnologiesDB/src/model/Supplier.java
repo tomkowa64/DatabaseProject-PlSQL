@@ -29,6 +29,11 @@ public class Supplier {
         this.WebPage = WebPage;
     }
 
+    public Supplier(int supplierId, String companyName) {
+        this.SupplierID = supplierId;
+        this.CompanyName = companyName;
+    }
+
     public int getSupplierID() {
         return SupplierID;
     }
