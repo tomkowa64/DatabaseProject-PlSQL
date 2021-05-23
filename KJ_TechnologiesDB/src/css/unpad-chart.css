@@ -1,0 +1,17 @@
+.chart {
+    -fx-padding: 0px;
+}
+.chart-content {
+    -fx-padding: 0px;
+}
+
+.axis:top > .axis-label,
+.axis:left > .axis-label {
+    -fx-padding: 0;
+}
+.axis:bottom > .axis-label,
+.axis:right > .axis-label {
+    -fx-padding: 0;
+}
+.default-color0.chart-bar { -fx-bar-fill: #e10056}
+.default-color1.chart-bar { -fx-bar-fill: #e10056 }

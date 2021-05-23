@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.chart.AreaChart?>
+<?import javafx.scene.chart.BarChart?>
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Button?>
@@ -55,7 +55,7 @@
                   <Image url="@../img/icons/categories.png" />
                </image>
             </ImageView>
-            <Button fx:id="exit" onAction="#handleExitButtonAction" layoutX="14.0" layoutY="684.0" mnemonicParsing="false" prefHeight="107.0" prefWidth="102.0" stylesheets="@../css/Main.css" textFill="WHITE">
+            <Button fx:id="exit" layoutX="14.0" layoutY="684.0" mnemonicParsing="false" onAction="#handleExitButtonAction" prefHeight="107.0" prefWidth="102.0" stylesheets="@../css/Main.css" textFill="WHITE">
                <graphic>
                   <ImageView fitHeight="80.0" fitWidth="93.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -66,15 +66,15 @@
             </Button>
          </children>
       </Pane>
-      <AreaChart fx:id="completedOrdersChart" layoutX="403.0" layoutY="207.0" prefHeight="540.0" prefWidth="838.0">
-        <xAxis>
-          <CategoryAxis side="BOTTOM" />
-        </xAxis>
-        <yAxis>
-          <NumberAxis side="LEFT" />
-        </yAxis>
-      </AreaChart>
       <Label layoutX="604.0" layoutY="25.0" prefHeight="69.0" prefWidth="436.0" style="-fx-font-size: 50px;" text="KJ TECHNOLOGIES" textAlignment="JUSTIFY" textFill="#0c121a" />
       <Label layoutX="620.0" layoutY="113.0" style="-fx-font-size: 50px;" text="CONTROL PANEL" textFill="#0c121a" />
+      <BarChart fx:id="completedOrdersChart" layoutX="412.0" layoutY="186.0" prefHeight="560.0" prefWidth="819.0">
+        <xAxis>
+          <CategoryAxis side="BOTTOM" fx:id="xAxis" />
+        </xAxis>
+        <yAxis>
+          <NumberAxis fx:id="yAxis" side="LEFT" />
+        </yAxis>
+      </BarChart>
    </children>
 </Pane>
