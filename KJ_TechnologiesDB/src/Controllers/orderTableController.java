@@ -383,11 +383,16 @@ public class orderTableController implements Initializable{
                                 CallableStatement stmt = con.prepareCall(query);
                                 stmt.setInt(1, getTableView().getItems().get(getIndex()).getOrderID());
                                 stmt.execute();
+                                
+                                FilteredList<Order> filteredData1 = new FilteredList<Order>(FXCollections.observableList(getOrderResultSet()));
+                                filteredData1.setPredicate(createPredicate(filterInput.getText()));
+                                filterInput.textProperty().addListener((observable, oldValue, newValue) ->
+                                    filteredData1.setPredicate(createPredicate(newValue))
+                                );
+                                OrderTable.setItems(filteredData1);
                             } catch (SQLException ex) {
                                 Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
                             }
-
-                            getTableView().getItems().remove(getIndex());
                         });
                     }
 
@@ -430,6 +435,8 @@ public class orderTableController implements Initializable{
             } catch (SQLException ex) {
                 Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setRequiredDate(event.getNewValue());
         });
         
         orderShipNameCol.setOnEditCommit((TableColumn.CellEditEvent<Order, String> event) -> {
@@ -449,6 +456,8 @@ public class orderTableController implements Initializable{
             } catch (SQLException ex) {
                 Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setShipName(event.getNewValue());
         });
 
         OrderTable.setItems(filteredData);

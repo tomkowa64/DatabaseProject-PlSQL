@@ -165,7 +165,6 @@ public class productTableController implements Initializable{
 
                 CallableStatement parametersStmt = con.prepareCall(parametersQuery);
                 
-                
                 parametersStmt.registerOutParameter(1, OracleTypes.CURSOR);
                 parametersStmt.setInt(2, productParametersId);
                 parametersStmt.executeQuery();
@@ -180,7 +179,6 @@ public class productTableController implements Initializable{
 
                 CallableStatement supplierStmt = con.prepareCall(supplierQuery);
                 
-                
                 supplierStmt.registerOutParameter(1, OracleTypes.CURSOR);
                 supplierStmt.setInt(2, productSupplierId);
                 supplierStmt.executeQuery();
@@ -194,7 +192,6 @@ public class productTableController implements Initializable{
                 String categoryQuery = "{call KJTCompany.SELECT_CATEGORIES_FOR_PRODUCTS(?,?)}";
 
                 CallableStatement categoryStmt = con.prepareCall(categoryQuery);
-                
                 
                 categoryStmt.registerOutParameter(1, OracleTypes.CURSOR);
                 categoryStmt.setInt(2, productCategoryId);
@@ -344,7 +341,6 @@ public class productTableController implements Initializable{
 
                 CallableStatement supplierStmt = con.prepareCall(supplierQuery);
                 
-                
                 supplierStmt.registerOutParameter(1, OracleTypes.CURSOR);
                 supplierStmt.setInt(2, productSupplierId);
                 supplierStmt.executeQuery();
@@ -359,7 +355,6 @@ public class productTableController implements Initializable{
 
                 CallableStatement categoryStmt = con.prepareCall(categoryQuery);
                 
-                
                 categoryStmt.registerOutParameter(1, OracleTypes.CURSOR);
                 categoryStmt.setInt(2, productCategoryId);
                 categoryStmt.executeQuery();
@@ -367,7 +362,6 @@ public class productTableController implements Initializable{
                 ResultSet categoryCursor = ((OracleCallableStatement)categoryStmt).getCursor(1);
                 
                 Category productCategory = new Category();
-                
                 
                 //PARAMETERS
                 try{
@@ -465,7 +459,6 @@ public class productTableController implements Initializable{
         
         ProductTable.setEditable(true);
         
-        
         productIdCol.setCellValueFactory(new PropertyValueFactory<Product,Number>("ProductID"));
         productNameCol.setCellValueFactory(new PropertyValueFactory<Product,String>("ProductName"));
         productParametersCol.setCellValueFactory(new PropertyValueFactory<Product,Parameter>("Parameter"));
@@ -494,11 +487,16 @@ public class productTableController implements Initializable{
                                 CallableStatement stmt = con.prepareCall(query);
                                 stmt.setInt(1, getTableView().getItems().get(getIndex()).getProductID());
                                 stmt.execute();
+                                
+                                FilteredList<Product> filteredData1 = new FilteredList<Product>(FXCollections.observableList(getProductResultSet()));
+                                filteredData1.setPredicate(createPredicate(filterInput.getText()));
+                                filterInput.textProperty().addListener((observable, oldValue, newValue) ->
+                                    filteredData1.setPredicate(createPredicate(newValue))
+                                );
+                                ProductTable.setItems(filteredData1);
                             } catch (SQLException ex) {
                                 Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
                             }
-
-                            getTableView().getItems().remove(getIndex());
                         });
                     }
 
@@ -537,6 +535,8 @@ public class productTableController implements Initializable{
             } catch (SQLException ex) {
                 Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setProductName(event.getNewValue());
         });
         
         productDescCol.setOnEditCommit((TableColumn.CellEditEvent<Product, String> event) -> {
@@ -556,6 +556,8 @@ public class productTableController implements Initializable{
             } catch (SQLException ex) {
                 Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setDescription(event.getNewValue());
         });
 
         ProductTable.setItems(filteredData);
@@ -633,11 +635,16 @@ public class productTableController implements Initializable{
                                 CallableStatement stmt = con.prepareCall(query);
                                 stmt.setInt(1, getTableView().getItems().get(getIndex()).getProductID());
                                 stmt.execute();
+                                
+                                FilteredList<Product> filteredData1 = new FilteredList<Product>(FXCollections.observableList(getProductResultSet()));
+                                filteredData1.setPredicate(createPredicate(filterInput.getText()));
+                                filterInput.textProperty().addListener((observable, oldValue, newValue) ->
+                                    filteredData1.setPredicate(createPredicate(newValue))
+                                );
+                                ProductTable.setItems(filteredData1);
                             } catch (SQLException ex) {
                                 Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
                             }
-
-                            getTableView().getItems().remove(getIndex());
                         });
                     }
 
@@ -676,6 +683,8 @@ public class productTableController implements Initializable{
             } catch (SQLException ex) {
                 Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setProductName(event.getNewValue());
         });
         
         productDescCol.setOnEditCommit((TableColumn.CellEditEvent<Product, String> event) -> {
@@ -695,6 +704,8 @@ public class productTableController implements Initializable{
             } catch (SQLException ex) {
                 Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setDescription(event.getNewValue());
         });
 
         ProductTable.setItems(filteredData);

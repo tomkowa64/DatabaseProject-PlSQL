@@ -212,7 +212,6 @@ public class employeeTableController implements Initializable{
                     ResultSet userCursor = ((OracleCallableStatement)usersStmt).getCursor(1);
                     User employeeUser = new User();
 
-
                     try{
                         while(userCursor.next()){
                         employeeUser.setUserID(userCursor.getInt("UserID"));
@@ -226,7 +225,6 @@ public class employeeTableController implements Initializable{
 
                     Employee employee = new Employee(employeeId, employeeFirstName, employeeLastName, employeeTitle, employeeTitleOfCourtesy, employeeBirthDate, employeeHireDate,
                     employeeAddress, employeePhoneNumber,employeeEmail, employeeUser);
-
 
                     ll.add(employee); 
                 }
@@ -285,7 +283,6 @@ public class employeeTableController implements Initializable{
 
                 CallableStatement addressStmt = con.prepareCall(addressQuery);
                 
-                
                 addressStmt.registerOutParameter(1, OracleTypes.CURSOR);
                 addressStmt.setInt(2, EmployeeAddressId);
                 addressStmt.executeQuery();
@@ -300,7 +297,6 @@ public class employeeTableController implements Initializable{
                 
                 int employeeUserId = 0; 
                 employeeUserId = cursor.getInt("UserID");
-                
                 
                 try{
                     while(addressCursor.next()){
@@ -329,7 +325,6 @@ public class employeeTableController implements Initializable{
                 ResultSet userCursor = ((OracleCallableStatement)usersStmt).getCursor(1);
                 User employeeUser = new User();
                 
-                
                 try{
                     while(userCursor.next()){
                     employeeUser.setUserID(userCursor.getInt("UserID"));
@@ -343,7 +338,6 @@ public class employeeTableController implements Initializable{
                 
                 Employee employee = new Employee(employeeId, employeeFirstName, employeeLastName, employeeTitle, employeeTitleOfCourtesy, employeeBirthDate, employeeHireDate,
                 employeeAddress, employeePhoneNumber,employeeEmail, employeeUser);
-                
                 
                 ll.add(employee); 
             }
@@ -408,11 +402,16 @@ public class employeeTableController implements Initializable{
                                 CallableStatement stmt = con.prepareCall(query);
                                 stmt.setInt(1, getTableView().getItems().get(getIndex()).getEmployeeID());
                                 stmt.execute();
+                                
+                                FilteredList<Employee> filteredData1 = new FilteredList<Employee>(FXCollections.observableList(getEmployeeResultSet()));
+                                filteredData1.setPredicate(createPredicate(filterInput.getText()));
+                                filterInput.textProperty().addListener((observable, oldValue, newValue) ->
+                                    filteredData1.setPredicate(createPredicate(newValue))
+                                );
+                                EmployeeTable.setItems(filteredData1);
                             } catch (SQLException ex) {
                                 Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
                             }
-
-                            getTableView().getItems().remove(getIndex());
                         });
                     }
 
@@ -454,6 +453,8 @@ public class employeeTableController implements Initializable{
             } catch (SQLException ex) {
                 Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setFirstName(event.getNewValue());
         });
 
         employeeLastNameCol.setOnEditCommit((TableColumn.CellEditEvent<Employee, String> event) -> {
@@ -473,6 +474,8 @@ public class employeeTableController implements Initializable{
             } catch (SQLException ex) {
                 Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setLastName(event.getNewValue());
         });
         
         employeeTitleCol.setOnEditCommit((TableColumn.CellEditEvent<Employee, String> event) -> {
@@ -495,6 +498,8 @@ public class employeeTableController implements Initializable{
             } catch (SQLException ex) {
                 Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setTitle(event.getNewValue());
         });
         
         employeeTitleOfCourtesyCol.setOnEditCommit((TableColumn.CellEditEvent<Employee, String> event) -> {
@@ -517,6 +522,8 @@ public class employeeTableController implements Initializable{
             } catch (SQLException ex) {
                 Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setTitleOfCourtesy(event.getNewValue());
         });
         
         employeeEmailCol.setOnEditCommit((TableColumn.CellEditEvent<Employee, String> event) -> {
@@ -535,6 +542,8 @@ public class employeeTableController implements Initializable{
             } catch (SQLException ex) {
                 Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setEmail(event.getNewValue());
         });
         
         EmployeeTable.setItems(filteredData);
@@ -608,11 +617,16 @@ public class employeeTableController implements Initializable{
                                 CallableStatement stmt = con.prepareCall(query);
                                 stmt.setInt(1, getTableView().getItems().get(getIndex()).getEmployeeID());
                                 stmt.execute();
+                                
+                                FilteredList<Employee> filteredData1 = new FilteredList<Employee>(FXCollections.observableList(getEmployeeResultSet()));
+                                filteredData1.setPredicate(createPredicate(filterInput.getText()));
+                                filterInput.textProperty().addListener((observable, oldValue, newValue) ->
+                                    filteredData1.setPredicate(createPredicate(newValue))
+                                );
+                                EmployeeTable.setItems(filteredData1);
                             } catch (SQLException ex) {
                                 Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
                             }
-
-                            getTableView().getItems().remove(getIndex());
                         });
                     }
 
@@ -654,6 +668,8 @@ public class employeeTableController implements Initializable{
             } catch (SQLException ex) {
                 Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setFirstName(event.getNewValue());
         });
 
         employeeLastNameCol.setOnEditCommit((TableColumn.CellEditEvent<Employee, String> event) -> {
@@ -673,6 +689,8 @@ public class employeeTableController implements Initializable{
             } catch (SQLException ex) {
                 Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setLastName(event.getNewValue());
         });
         
         employeeTitleCol.setOnEditCommit((TableColumn.CellEditEvent<Employee, String> event) -> {
@@ -695,6 +713,8 @@ public class employeeTableController implements Initializable{
             } catch (SQLException ex) {
                 Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setTitle(event.getNewValue());
         });
         
         employeeTitleOfCourtesyCol.setOnEditCommit((TableColumn.CellEditEvent<Employee, String> event) -> {
@@ -717,6 +737,8 @@ public class employeeTableController implements Initializable{
             } catch (SQLException ex) {
                 Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setTitleOfCourtesy(event.getNewValue());
         });
         
         employeeEmailCol.setOnEditCommit((TableColumn.CellEditEvent<Employee, String> event) -> {
@@ -735,6 +757,8 @@ public class employeeTableController implements Initializable{
             } catch (SQLException ex) {
                 Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setEmail(event.getNewValue());
         });
         
         EmployeeTable.setItems(filteredData);

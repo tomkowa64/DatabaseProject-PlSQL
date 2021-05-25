@@ -178,7 +178,6 @@ public class shipperTableController implements Initializable{
         
         ShipperTable.setEditable(true);
         
-        
         shipperIdCol.setCellValueFactory(new PropertyValueFactory<Shipper,Number>("ShipperID"));
         shipperCompanyNameCol.setCellValueFactory(new PropertyValueFactory<Shipper,String>("CompanyName"));
         shipperPhoneNumberCol.setCellValueFactory(new PropertyValueFactory<Shipper, Number>("PhoneNumber"));
@@ -203,11 +202,16 @@ public class shipperTableController implements Initializable{
                                     CallableStatement stmt = con.prepareCall(query);
                                     stmt.setInt(1, getTableView().getItems().get(getIndex()).getShipperID());
                                     stmt.execute();
+                                    
+                                    FilteredList<Shipper> filteredData1 = new FilteredList<Shipper>(FXCollections.observableList(getShippersResultSet()));
+                                    filteredData1.setPredicate(createPredicate(filterInput.getText()));
+                                    filterInput.textProperty().addListener((observable, oldValue, newValue) ->
+                                        filteredData1.setPredicate(createPredicate(newValue))
+                                    );
+                                    ShipperTable.setItems(filteredData1);
                                 } catch (SQLException ex) {
                                     Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
                                 }
-
-                                getTableView().getItems().remove(getIndex());
                             });
                         }
 
@@ -244,6 +248,8 @@ public class shipperTableController implements Initializable{
             } catch (SQLException ex) {
                 Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setCompanyName(event.getNewValue());
         });
         
         shipperEmailCol.setOnEditCommit((TableColumn.CellEditEvent<Shipper, String> event) -> {
@@ -260,6 +266,8 @@ public class shipperTableController implements Initializable{
             } catch (SQLException ex) {
                 Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setEmail(event.getNewValue());
         });
 
         ShipperTable.setItems(filteredData);

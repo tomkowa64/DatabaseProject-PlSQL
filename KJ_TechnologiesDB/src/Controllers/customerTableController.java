@@ -394,7 +394,6 @@ public class customerTableController implements Initializable{
         
         CustomerTable.setEditable(true);
         
-        
         customerIdCol.setCellValueFactory(new PropertyValueFactory<Customer,Number>("CustomerID"));
         customerFirstNameCol.setCellValueFactory(new PropertyValueFactory<Customer,String>("FirstName"));
         customerLastNameCol.setCellValueFactory(new PropertyValueFactory<Customer,String>("LastName"));
@@ -424,11 +423,16 @@ public class customerTableController implements Initializable{
                                 CallableStatement stmt = con.prepareCall(query);
                                 stmt.setInt(1, getTableView().getItems().get(getIndex()).getCustomerID());
                                 stmt.execute();
+                                
+                                FilteredList<Customer> filteredData1 = new FilteredList<Customer>(FXCollections.observableList(getCustomersResultSet()));
+                                filteredData1.setPredicate(createPredicate(filterInput.getText()));
+                                filterInput.textProperty().addListener((observable, oldValue, newValue) ->
+                                    filteredData1.setPredicate(createPredicate(newValue))
+                                );
+                                CustomerTable.setItems(filteredData1);
                             } catch (SQLException ex) {
                                 Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
                             }
-
-                            getTableView().getItems().remove(getIndex());
                         });
                     }
 
@@ -469,6 +473,8 @@ public class customerTableController implements Initializable{
             } catch (SQLException ex) {
                 Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setFirstName(event.getNewValue());
         });
         
         customerLastNameCol.setOnEditCommit((TableColumn.CellEditEvent<Customer, String> event) -> {
@@ -488,6 +494,8 @@ public class customerTableController implements Initializable{
             } catch (SQLException ex) {
                 Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setLastName(event.getNewValue());
         });
         
         customerTitleCol.setOnEditCommit((TableColumn.CellEditEvent<Customer, String> event) -> {
@@ -508,6 +516,8 @@ public class customerTableController implements Initializable{
             } catch (SQLException ex) {
                 Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setContactTitle(event.getNewValue());
         });
         
         customerEmailCol.setOnEditCommit((TableColumn.CellEditEvent<Customer, String> event) -> {
@@ -526,6 +536,8 @@ public class customerTableController implements Initializable{
             } catch (SQLException ex) {
                 Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setEmail(event.getNewValue());
         });
 
         CustomerTable.setItems(filteredData);
@@ -570,7 +582,6 @@ public class customerTableController implements Initializable{
         
         CustomerTable.setEditable(true);
         
-        
         customerIdCol.setCellValueFactory(new PropertyValueFactory<Customer,Number>("CustomerID"));
         customerFirstNameCol.setCellValueFactory(new PropertyValueFactory<Customer,String>("FirstName"));
         customerLastNameCol.setCellValueFactory(new PropertyValueFactory<Customer,String>("LastName"));
@@ -600,11 +611,16 @@ public class customerTableController implements Initializable{
                                 CallableStatement stmt = con.prepareCall(query);
                                 stmt.setInt(1, getTableView().getItems().get(getIndex()).getCustomerID());
                                 stmt.execute();
+                                
+                                FilteredList<Customer> filteredData1 = new FilteredList<Customer>(FXCollections.observableList(getCustomersResultSet()));
+                                filteredData1.setPredicate(createPredicate(filterInput.getText()));
+                                filterInput.textProperty().addListener((observable, oldValue, newValue) ->
+                                    filteredData1.setPredicate(createPredicate(newValue))
+                                );
+                                CustomerTable.setItems(filteredData1);
                             } catch (SQLException ex) {
                                 Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
                             }
-
-                            getTableView().getItems().remove(getIndex());
                         });
                     }
 
@@ -645,6 +661,8 @@ public class customerTableController implements Initializable{
             } catch (SQLException ex) {
                 Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setFirstName(event.getNewValue());
         });
         
         customerLastNameCol.setOnEditCommit((TableColumn.CellEditEvent<Customer, String> event) -> {
@@ -664,6 +682,8 @@ public class customerTableController implements Initializable{
             } catch (SQLException ex) {
                 Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setLastName(event.getNewValue());
         });
         
         customerTitleCol.setOnEditCommit((TableColumn.CellEditEvent<Customer, String> event) -> {
@@ -684,6 +704,8 @@ public class customerTableController implements Initializable{
             } catch (SQLException ex) {
                 Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setContactTitle(event.getNewValue());
         });
         
         customerEmailCol.setOnEditCommit((TableColumn.CellEditEvent<Customer, String> event) -> {
@@ -702,10 +724,10 @@ public class customerTableController implements Initializable{
             } catch (SQLException ex) {
                 Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setEmail(event.getNewValue());
         });
 
         CustomerTable.setItems(filteredData);
     }
-    
-    
 }

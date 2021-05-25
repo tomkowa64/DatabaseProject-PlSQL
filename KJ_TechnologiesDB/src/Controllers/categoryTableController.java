@@ -170,7 +170,6 @@ public class categoryTableController implements Initializable{
         
         CategoryTable.setEditable(true);
         
-        
         categoryIdCol.setCellValueFactory(new PropertyValueFactory<Category,Number>("CategoryId"));
         categoryNameCol.setCellValueFactory(new PropertyValueFactory<Category,String>("CategoryName"));
         categoryDescCol.setCellValueFactory(new PropertyValueFactory<Category,String>("Description"));
@@ -194,11 +193,16 @@ public class categoryTableController implements Initializable{
                                 CallableStatement stmt = con.prepareCall(query);
                                 stmt.setInt(1, getTableView().getItems().get(getIndex()).getCategoryId());
                                 stmt.execute();
+                                
+                                FilteredList<Category> filteredData1 = new FilteredList<Category>(FXCollections.observableList(getCategoriesResultSet()));
+                                filteredData1.setPredicate(createPredicate(filterInput.getText()));
+                                filterInput.textProperty().addListener((observable, oldValue, newValue) ->
+                                    filteredData1.setPredicate(createPredicate(newValue))
+                                );
+                                CategoryTable.setItems(filteredData1);
                             } catch (SQLException ex) {
                                 Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
                             }
-                            
-                            getTableView().getItems().remove(getIndex());
                         });
                     }
 
@@ -215,8 +219,7 @@ public class categoryTableController implements Initializable{
                 cell.setAlignment(Pos.CENTER);
                 return cell;
             }
-         }
-        ); 
+        });
         
         categoryNameCol.setOnEditCommit((TableColumn.CellEditEvent<Category, String> event) -> {
             Connection con;  
@@ -231,6 +234,8 @@ public class categoryTableController implements Initializable{
             } catch (SQLException ex) {
                 Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setCategoryName(event.getNewValue());
         });
         
         categoryDescCol.setOnEditCommit((TableColumn.CellEditEvent<Category, String> event) -> {
@@ -246,6 +251,8 @@ public class categoryTableController implements Initializable{
             } catch (SQLException ex) {
                 Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setDescription(event.getNewValue());
         });
         
         categoryNameCol.setCellFactory(TextFieldTableCell.forTableColumn());

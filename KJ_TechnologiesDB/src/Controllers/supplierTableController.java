@@ -141,13 +141,11 @@ public class supplierTableController implements Initializable{
                 String supplierEmail = cursor.getString("Email");
                 String supplierWebpage= cursor.getString("WebPage");
                 
-
                 //ADDRESSES
 
                 String addressQuery = "{call KJTCompany.SELECT_ADDRESSES(?,?)}";
 
                 CallableStatement addressStmt = con.prepareCall(addressQuery);
-                
                 
                 addressStmt.registerOutParameter(1, OracleTypes.CURSOR);
                 addressStmt.setInt(2, supplierAddressId);
@@ -156,7 +154,6 @@ public class supplierTableController implements Initializable{
                 ResultSet addressCursor = ((OracleCallableStatement)addressStmt).getCursor(1);
                 
                 Address supplierAddress = new Address();
-                
                 
                 try{
                     while(addressCursor.next()){
@@ -173,7 +170,6 @@ public class supplierTableController implements Initializable{
                 }
 
                 Supplier supplier = new Supplier(supplierId, supplierCompanyName, supplierAddress, supplierPhoneNumber, supplierEmail, supplierWebpage);
-                
                 
                 ll.add(supplier); 
             }
@@ -212,7 +208,6 @@ public class supplierTableController implements Initializable{
             filterInput.setText(null);
         }
     }
-        
         
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -258,11 +253,16 @@ public class supplierTableController implements Initializable{
                                 CallableStatement stmt = con.prepareCall(query);
                                 stmt.setInt(1, getTableView().getItems().get(getIndex()).getSupplierID());
                                 stmt.execute();
+                                
+                                FilteredList<Supplier> filteredData1 = new FilteredList<Supplier>(FXCollections.observableList(getSupplierResultSet()));
+                                filteredData1.setPredicate(createPredicate(filterInput.getText()));
+                                filterInput.textProperty().addListener((observable, oldValue, newValue) ->
+                                    filteredData1.setPredicate(createPredicate(newValue))
+                                );
+                                SupplierTable.setItems(filteredData1);
                             } catch (SQLException ex) {
                                 Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
                             }
-
-                            getTableView().getItems().remove(getIndex());
                         });
                     }
 
@@ -301,6 +301,8 @@ public class supplierTableController implements Initializable{
             } catch (SQLException ex) {
                 Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setCompanyName(event.getNewValue());
         });
         
         supplierEmailCol.setOnEditCommit((TableColumn.CellEditEvent<Supplier, String> event) -> {
@@ -318,6 +320,8 @@ public class supplierTableController implements Initializable{
             } catch (SQLException ex) {
                 Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setEmail(event.getNewValue());
         });
         
         supplierWebpageCol.setOnEditCommit((TableColumn.CellEditEvent<Supplier, String> event) -> {
@@ -335,6 +339,8 @@ public class supplierTableController implements Initializable{
             } catch (SQLException ex) {
                 Logger.getLogger(categoryTableController.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
+            event.getTableView().getItems().get(event.getTablePosition().getRow()).setWebPage(event.getNewValue());
         });
 
         SupplierTable.setItems(filteredData);
